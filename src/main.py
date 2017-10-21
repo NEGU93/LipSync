@@ -1,5 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QPushButton, QAction
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QPushButton, QAction, QFileDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
@@ -42,9 +43,9 @@ class App(QMainWindow):
         # Under File
         # Open File
         openButton = QAction('Open', self)
-        openButton.setShortcut("Ctrl+E")
+        openButton.setShortcut("Ctrl+O")
         openButton.setStatusTip("Open wav file")
-        openButton.triggered.connect(self.open)
+        openButton.triggered.connect(self.file_open)
         fileMenu.addAction(openButton)
         # Export file
         exportButton = QAction('Export', self)
@@ -56,10 +57,11 @@ class App(QMainWindow):
         exitButton.triggered.connect(self.close)
         fileMenu.addAction(exitButton)
 
-    def open(self):
-        print('open file')
-        path = 'hola'
-        self.data.open_wav(path=path)
+    def file_open(self):
+        # import pdb; pdb.set_trace()
+        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav')
+        # import pdb; pdb.set_trace()
+        print('Path: ' + path)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
