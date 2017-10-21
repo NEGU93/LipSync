@@ -4,10 +4,10 @@ from scipy.fftpack import fft, fftshift
 import matplotlib.pyplot as plt
 import math
 import wave
-import sounddevice as sd
 import sys
 import struct
 from processing_functions import short_time_energy
+from audiolazy import lazy_lpc
 
 
 def wav_to_floats(wave_file):
