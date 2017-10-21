@@ -1,5 +1,8 @@
 import sys
+import wave
+import struct
 import central_widgets
+import numpy as np
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QAction, QFileDialog, QGroupBox, QHBoxLayout, \
     QVBoxLayout, QWidget
 from PyQt5.QtGui import QIcon
@@ -11,7 +14,17 @@ class LipSyncData():
         self.audio = []
 
     def open_wav(self, path):
-        print('Not implemented yet Open wav')
+        sound_frames, fs = self.wav_to_floats(path)
+        self.audio = np.asarray(sound_frames)
+
+    def wav_to_floats(self, path):
+        w = wave.open(path)
+        fs = w.getframerate()
+        astr = w.readframes(w.getnframes())
+        # convert binary chunks to short
+        a = struct.unpack("%ih" % (w.getnframes() * w.getnchannels()), astr)
+        a = [float(val) / pow(2, 15) for val in a]
+        return a, fs
 
 
 class App(QMainWindow):

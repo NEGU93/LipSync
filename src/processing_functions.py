@@ -24,7 +24,7 @@ def shorttime_energy(sig, window, step_size):
 def short_time_energy(signal, window, step_size):
     energy_time = np.zeros(signal.size)
 
-    for it in range(0, math.ceil(signal.size / step_size)):
+    for it in range(0, int(math.ceil(signal.size / step_size))):
         frame_signal = signal[it*step_size:min(it*step_size + window.size, signal.size)]
         # import pdb; pdb.set_trace()
         if window.size != frame_signal.size:
