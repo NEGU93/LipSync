@@ -1,39 +1,49 @@
 import sys
-import central_widgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QAction, QFileDialog, QGroupBox, QHBoxLayout, \
-    QVBoxLayout, QWidget
+    QVBoxLayout
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
-
-
-class LipSyncData():
-    def __init__(self):
-        self.audio = []
-
-    def open_wav(self, path):
-        print('Not implemented yet Open wav')
 
 
 class App(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.title = 'LipSync - by Matias Dwek & Agustin Barrachina'
+        self.title = 'PyQt5 layout - pythonspot.com'
         self.left = 10
         self.top = 10
-        self.width = 640
-        self.height = 400
-        self.data = LipSyncData()
+        self.width = 320
+        self.height = 100
         self.initUI()
 
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.addMenu()
+        self.createHorizontalLayout()
 
-        self.form_widget = central_widgets.FormWidget(self)
-        self.setCentralWidget(self.form_widget)
+        windowLayout = QVBoxLayout()
+        windowLayout.addWidget(self.horizontalGroupBox)
+        self.setLayout(windowLayout)
 
         self.show()
+
+    def createHorizontalLayout(self):
+        self.horizontalGroupBox = QGroupBox("What is your favorite color?")
+        layout = QHBoxLayout()
+
+        buttonBlue = QPushButton('Blue', self)
+        buttonBlue.clicked.connect(self.on_click)
+        layout.addWidget(buttonBlue)
+
+        buttonRed = QPushButton('Red', self)
+        buttonRed.clicked.connect(self.on_click)
+        layout.addWidget(buttonRed)
+
+        buttonGreen = QPushButton('Green', self)
+        buttonGreen.clicked.connect(self.on_click)
+        layout.addWidget(buttonGreen)
+
+        self.horizontalGroupBox.setLayout(layout)
 
     def addMenu(self):
         mainMenu = self.menuBar()
@@ -46,12 +56,6 @@ class App(QMainWindow):
 
         # Under File
         # Open File
-        openButton = QAction('Open', self)
-        openButton.setShortcut("Ctrl+O")
-        openButton.setStatusTip("Open wav file")
-        openButton.triggered.connect(self.file_open)
-        fileMenu.addAction(openButton)
-        # Export file
         exportButton = QAction('Export', self)
         fileMenu.addAction(exportButton)
         # Exit Button
@@ -61,10 +65,10 @@ class App(QMainWindow):
         exitButton.triggered.connect(self.close)
         fileMenu.addAction(exitButton)
 
-    def file_open(self):
-        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav')
-        print('Path: ' + path)
-        self.data.open_wav(path)
+    @pyqtSlot()
+    def on_click(self):
+        print('PyQt5 button click')
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
