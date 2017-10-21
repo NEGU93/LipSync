@@ -1,27 +1,27 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtGui import QIcon
+from PyQt5 import QtWidgets
 
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self, databaseFilePath, userFilePath):
+        super(MainWindow, self).__init__()
+        self.databaseFilePath = databaseFilePath
+        self.userFilePath = userFilePath
+        self.createUI()
 
-class App(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.title = 'LipSync by Matias Dwek & Agustin Barrachina'
-        self.left = 10
-        self.top = 10
-        self.width = 640
-        self.height = 480
-        self.initUI()
+    def changeFilePath(self):
+        print('changeFilePath')
 
-    def initUI(self):
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
-        self.menu = self.menuBar().addMenu('File')
-        self.show()
-
+    def createUI(self):
+        self.setWindowTitle('Equipment Manager 0.3')
+        menu = self.menuBar().addMenu('File')
+        action = menu.addAction('Open')
+        action.triggered.connect(self.changeFilePath)
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = App()
+
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow('some/path', 'some/other/path')
+    window.show()
+    window.setGeometry(500, 300, 300, 300)
     sys.exit(app.exec_())
 
