@@ -16,7 +16,7 @@ class Window(QtGui.QMainWindow):
         self.statusBar()
 
         mainMenu = self.menuBar()
-        fileMenu = mainMenu.addMenu('&File')
+        fileMenu = mainMenu.add_menu('&File')
         fileMenu.addAction(extractAction)
 
         self.home()

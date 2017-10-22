@@ -43,65 +43,65 @@ class App(QMainWindow):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setWindowIcon(QIcon('../images/icons/body_6-512.png'))
-        self.addMenu()
-        self.addToolbar()
+        self.add_menu()
+        self.add_toolbar()
 
         self.form_widget = central_widgets.FormWidget(self)
         self.setCentralWidget(self.form_widget)
 
         self.show()
 
-    def addMenu(self):
-        mainMenu = self.menuBar()
-        fileMenu = mainMenu.addMenu('File')
-        editMenu = mainMenu.addMenu('Edit')
-        viewMenu = mainMenu.addMenu('View')
-        searchMenu = mainMenu.addMenu('Search')
-        toolsMenu = mainMenu.addMenu('Tools')
-        helpMenu = mainMenu.addMenu('Help')
+    def add_menu(self):
+        main_menu = self.menuBar()
+        file_menu = main_menu.addMenu('File')
+        edit_menu = main_menu.addMenu('Edit')
+        view_menu = main_menu.addMenu('View')
+        search_menu = main_menu.addMenu('Search')
+        tools_menu = main_menu.addMenu('Tools')
+        help_menu = main_menu.addMenu('Help')
 
         # Under File
         # Open File
-        openButton = QAction('Open', self)
-        openButton.setShortcut("Ctrl+O")
-        openButton.setStatusTip("Open wav file")
-        openButton.triggered.connect(self.file_open)
-        fileMenu.addAction(openButton)
+        open_button = QAction('Open', self)
+        open_button.setShortcut("Ctrl+O")
+        open_button.setStatusTip("Open wav file")
+        open_button.triggered.connect(self.file_open)
+        file_menu.addAction(open_button)
         # Export file
-        exportButton = QAction('Export', self)
-        fileMenu.addAction(exportButton)
+        export_button = QAction('Export', self)
+        file_menu.addAction(export_button)
         # Exit Button
-        exitButton = QAction(QIcon('exit24.png'), 'Exit', self)
-        exitButton.setShortcut('Ctrl+Q')
-        exitButton.setStatusTip('Exit application')
-        exitButton.triggered.connect(self.close)
-        fileMenu.addAction(exitButton)
+        exit_button = QAction(QIcon('exit24.png'), 'Exit', self)
+        exit_button.setShortcut('Ctrl+Q')
+        exit_button.setStatusTip('Exit application')
+        exit_button.triggered.connect(self.close)
+        file_menu.addAction(exit_button)
 
-    def addToolbar(self):
-        self.toolBar = self.addToolBar('Main Toolbar')
+    def add_toolbar(self):
+        self.toolbar = self.addToolBar('Main Toolbar')
 
-        openButton = QAction(QIcon('../images/icons/149334.svg'), 'Open File', self)
-        openButton.triggered.connect(self.file_open)
+        open_button = QAction(QIcon('../images/icons/149334.svg'), 'Open File', self)
+        open_button.triggered.connect(self.file_open)
 
-        exportButton = QAction(QIcon('../images/icons/extract.svg'), 'Open File', self)
+        export_button = QAction(QIcon('../images/icons/extract.svg'), 'Open File', self)
 
-        playButton = QAction(QIcon('../images/icons/play.svg'), 'Open File', self)
+        play_button = QAction(QIcon('../images/icons/play.svg'), 'Open File', self)
 
-        pauseButton = QAction(QIcon('../images/icons/pause.svg'), 'Open File', self)
+        pause_button = QAction(QIcon('../images/icons/pause.svg'), 'Open File', self)
 
-        stopButton = QAction(QIcon('../images/icons/stop.svg'), 'Open File', self)
+        stop_button = QAction(QIcon('../images/icons/stop.svg'), 'Open File', self)
 
-        self.toolBar.addAction(openButton)
-        self.toolBar.addAction(exportButton)
-        self.toolBar.addAction(playButton)
-        self.toolBar.addAction(pauseButton)
-        self.toolBar.addAction(stopButton)
+        self.toolbar.addAction(open_button)
+        self.toolbar.addAction(export_button)
+        self.toolbar.addAction(play_button)
+        self.toolbar.addAction(pause_button)
+        self.toolbar.addAction(stop_button)
 
     def file_open(self):
         path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav', directory='../sounds/')
         self.data.open_wav(path)
         filename = path.split('/')
-        self.form_widget.plotData(self.data. audio, filename[len(filename)-1])
+        self.form_widget.plot_data(self.data. audio, filename[len(filename) - 1])
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

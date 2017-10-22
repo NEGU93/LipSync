@@ -10,12 +10,12 @@ class FormWidget(QWidget):
         super(FormWidget, self).__init__(parent)
         self.layout = QHBoxLayout(self)
 
-        self.rightLayout_init()
-        self.leftLayout_init()
+        self.right_layout_init()
+        self.left_layout_init()
 
         self.setLayout(self.layout)
 
-    def leftLayout_init(self):
+    def left_layout_init(self):
         self.leftLayout = QVBoxLayout(self)
 
         self.label = QLabel(self)
@@ -25,7 +25,7 @@ class FormWidget(QWidget):
 
         self.layout.addLayout(self.leftLayout)
 
-    def rightLayout_init(self):
+    def right_layout_init(self):
         self.leftLayout = QVBoxLayout(self)
         self.canvas = PlotCanvas()
         self.leftLayout.addWidget(self.canvas)
@@ -33,10 +33,9 @@ class FormWidget(QWidget):
         self.leftLayout.addWidget(self.button2)
         self.layout.addLayout(self.leftLayout)
 
-    def plotData(self, data, filename):
+    def plot_data(self, data, filename):
         # import pdb; pdb.set_trace()
         self.canvas.plot(data, filename)
-
 
 
 class PlotCanvas(FigureCanvas):
