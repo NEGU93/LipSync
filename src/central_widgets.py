@@ -76,6 +76,8 @@ class FormWidget(QWidget):
 
     def run_phonema_recognition_algorithm(self):
         self.data.example_dat()
+        for i in range(0, len(self.data.dat)):
+            self.add_vertical_line(self.data.dat[i][0] / self.data.fs, remove=False)
 
 
 class PlotCanvas(FigureCanvas):
@@ -100,12 +102,11 @@ class PlotCanvas(FigureCanvas):
         ax.set_title(name)
         ax.set_xlabel('seconds')
         self.draw()
-        ax.axvline(x=0, color='r')
 
     def draw_line(self, sec, remove=True):
         # import pdb; pdb.set_trace()
         ax = self.fig.add_subplot(111)
-        if remove:
+        if remove and len(ax.lines) > 1:
             ax.lines[1].remove()
         ax.axvline(x=sec, color='r')
         self.draw()

@@ -80,6 +80,9 @@ class LipSyncData:
     def get_current_index(self):
         return int(self.get_current_time() * self.fs)
 
+    def append_dat(self, index, phoneme):
+        self.dat.append((index, phoneme))
+
     def export_dat(self, path):
         file = open(path, "w")
 
