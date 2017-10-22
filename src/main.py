@@ -10,7 +10,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
 
-class LipSyncData():
+class LipSyncData:
     def __init__(self):
         self.audio = []
 
@@ -37,16 +37,17 @@ class App(QMainWindow):
         self.width = 640
         self.height = 400
         self.data = LipSyncData()
-        self.initUI()
+        self.form_widget = central_widgets.FormWidget(self)
+        self.toolbar = self.addToolBar('Main Toolbar')
+        self.init_gui()
 
-    def initUI(self):
+    def init_gui(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setWindowIcon(QIcon('../images/icons/body_6-512.png'))
         self.add_menu()
         self.add_toolbar()
 
-        self.form_widget = central_widgets.FormWidget(self)
         self.setCentralWidget(self.form_widget)
 
         self.show()
@@ -78,8 +79,6 @@ class App(QMainWindow):
         file_menu.addAction(exit_button)
 
     def add_toolbar(self):
-        self.toolbar = self.addToolBar('Main Toolbar')
-
         open_button = QAction(QIcon('../images/icons/149334.svg'), 'Open File', self)
         open_button.triggered.connect(self.file_open)
 

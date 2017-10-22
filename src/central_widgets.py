@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction
+from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction, QComboBox
 from PyQt5.QtGui import QIcon, QPixmap
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -9,6 +9,8 @@ class FormWidget(QWidget):
     def __init__(self, parent):
         super(FormWidget, self).__init__(parent)
         self.layout = QHBoxLayout(self)
+        self.leftLayout = QVBoxLayout(self)
+        self.rightLayout = QVBoxLayout(self)
 
         self.right_layout_init()
         self.left_layout_init()
@@ -16,21 +18,26 @@ class FormWidget(QWidget):
         self.setLayout(self.layout)
 
     def left_layout_init(self):
-        self.leftLayout = QVBoxLayout(self)
+        label = QLabel(self)
+        pixmap = QPixmap('../images/mouth_types.jpg')
+        label.setPixmap(pixmap)
 
-        self.label = QLabel(self)
-        self.pixmap = QPixmap('../images/mouth_types.jpg')
-        self.label.setPixmap(self.pixmap)
-        self.leftLayout.addWidget(self.label)
+        comboBox = QComboBox(self)
+        comboBox.addItem('Algorithm 1')
+        comboBox.addItem('Algorithm 2')
 
-        self.layout.addLayout(self.leftLayout)
+        run_algorithm_button = QPushButton('Run Algorithm', self)
+        run_algorithm_button.setToolTip('Run the selected phoneme recognition algorithm')
+
+        self.rightLayout.addWidget(label)
+        self.rightLayout.addWidget(comboBox)
+        self.rightLayout.addWidget(run_algorithm_button)
+
+        self.layout.addLayout(self.rightLayout)
 
     def right_layout_init(self):
-        self.leftLayout = QVBoxLayout(self)
         self.canvas = PlotCanvas()
         self.leftLayout.addWidget(self.canvas)
-        self.button2 = QPushButton("Button 2")
-        self.leftLayout.addWidget(self.button2)
         self.layout.addLayout(self.leftLayout)
 
     def plot_data(self, data, filename):
