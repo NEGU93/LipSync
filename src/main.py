@@ -3,8 +3,9 @@ import wave
 import struct
 import central_widgets
 import numpy as np
+
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QAction, QFileDialog, QGroupBox, QHBoxLayout, \
-    QVBoxLayout, QWidget
+    QVBoxLayout, QWidget, QSizePolicy
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
@@ -31,8 +32,8 @@ class App(QMainWindow):
     def __init__(self):
         super().__init__()
         self.title = 'LipSync - by Matias Dwek & Agustin Barrachina'
-        self.left = 10
-        self.top = 10
+        self.left = 100
+        self.top = 100
         self.width = 640
         self.height = 400
         self.data = LipSyncData()
@@ -41,7 +42,9 @@ class App(QMainWindow):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setWindowIcon(QIcon('../images/icons/body_6-512.png'))
         self.addMenu()
+        self.addToolbar()
 
         self.form_widget = central_widgets.FormWidget(self)
         self.setCentralWidget(self.form_widget)
@@ -74,10 +77,31 @@ class App(QMainWindow):
         exitButton.triggered.connect(self.close)
         fileMenu.addAction(exitButton)
 
+    def addToolbar(self):
+        self.toolBar = self.addToolBar('Main Toolbar')
+
+        openButton = QAction(QIcon('../images/icons/149334.svg'), 'Open File', self)
+        openButton.triggered.connect(self.file_open)
+
+        exportButton = QAction(QIcon('../images/icons/extract.svg'), 'Open File', self)
+
+        playButton = QAction(QIcon('../images/icons/play.svg'), 'Open File', self)
+
+        pauseButton = QAction(QIcon('../images/icons/pause.svg'), 'Open File', self)
+
+        stopButton = QAction(QIcon('../images/icons/stop.svg'), 'Open File', self)
+
+        self.toolBar.addAction(openButton)
+        self.toolBar.addAction(exportButton)
+        self.toolBar.addAction(playButton)
+        self.toolBar.addAction(pauseButton)
+        self.toolBar.addAction(stopButton)
+
     def file_open(self):
-        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav')
-        print('Path: ' + path)
+        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav', directory='../sounds/')
         self.data.open_wav(path)
+        filename = path.split('/')
+        self.form_widget.plotData(self.data. audio, filename[len(filename)-1])
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
