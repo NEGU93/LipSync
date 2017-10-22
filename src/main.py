@@ -1,5 +1,6 @@
 import sys
 import data
+import time
 import central_widgets
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QAction, QFileDialog, QGroupBox, QHBoxLayout, \
@@ -62,26 +63,52 @@ class App(QMainWindow):
         open_button = QAction(QIcon('../images/icons/149334.svg'), 'Open File', self)
         open_button.triggered.connect(self.file_open)
 
-        export_button = QAction(QIcon('../images/icons/extract.svg'), 'Open File', self)
+        export_button = QAction(QIcon('../images/icons/extract.svg'), 'export File', self)
 
-        play_button = QAction(QIcon('../images/icons/play.svg'), 'Open File', self)
+        self.play_button = QAction(QIcon('../images/icons/play_circle.svg'), 'PLay Audio', self)
+        self.play_button.triggered.connect(self.play_audio)
+        self.play_button.setEnabled(False)
 
-        pause_button = QAction(QIcon('../images/icons/pause.svg'), 'Open File', self)
+        self.pause_button = QAction(QIcon('../images/icons/pause_circle.svg'), 'Pause Audio', self)
+        self.pause_button.triggered.connect(self.pause_audio)
+        self.pause_button.setEnabled(False)
 
-        stop_button = QAction(QIcon('../images/icons/stop.svg'), 'Open File', self)
+        self.stop_button = QAction(QIcon('../images/icons/stop_circle.svg'), 'Stop Audio', self)
+        self.stop_button.triggered.connect(self.stop_audio)
+        self.stop_button.setEnabled(False)
 
         self.toolbar.addAction(open_button)
         self.toolbar.addAction(export_button)
-        self.toolbar.addAction(play_button)
-        self.toolbar.addAction(pause_button)
-        self.toolbar.addAction(stop_button)
+        self.toolbar.addAction(self.play_button)
+        self.toolbar.addAction(self.pause_button)
+        self.toolbar.addAction(self.stop_button)
 
     def file_open(self):
         path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav', directory='../sounds/')
-        self.data.open_wav(path)
-        filename = path.split('/')
-        # import pdb; pdb.set_trace()
-        self.form_widget.plot_data(filename[len(filename) - 1])
+        if path is not '':
+            self.data.open_wav(path)
+            filename = path.split('/')
+            self.form_widget.plot_data(filename[len(filename) - 1])
+            self.play_button.setEnabled(True)
+            self.stop_button.setEnabled(True)
+            self.pause_button.setEnabled(True)
+
+    def play_audio(self):
+        self.data.play_audio()
+        count = 0
+        while count < len(self.data.dat) and self.data.get_current_time() != 0.0:
+            # import pdb; pdb.set_trace()
+            if self.data.dat[count][0] >= self.data.get_current_index():
+                # import pdb; pdb.set_trace()
+                self.form_widget.add_vertical_line(self.data.get_current_time(), remove=False)
+                print(self.data.dat[count][1].name)
+                count = count + 1
+
+    def stop_audio(self):
+        self.data.stop_audio()
+
+    def pause_audio(self):
+        self.form_widget.add_vertical_line(self.data.get_current_time())
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

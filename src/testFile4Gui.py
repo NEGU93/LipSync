@@ -1,48 +1,62 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import musicplayer, sys, os, fnmatch, random, pprint, Tkinter
 
-# Example of Singleton design pattern
-# Copyright (C) 2011 Radek Pazdera
+class Song:
+        def __init__(self, fn):
+                self.url = fn
+                self.f = open(fn)
+        # `__eq__` is used for the peek stream management
+        def __eq__(self, other):
+                return self.url == other.url
+        # this is used by the player as the data interface
+        def readPacket(self, bufSize):
+                return self.f.read(bufSize)
+        def seekRaw(self, offset, whence):
+                r = self.f.seek(offset, whence)
+                return self.f.tell()
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+files = []
+def getFiles(path):
+        for f in sorted(os.listdir(path), key=lambda k: random.random()):
+                f = os.path.join(path, f)
+                if os.path.isdir(f): getFiles(f) # recurse
+                if len(files) > 1000: break # break if we have enough
+                if fnmatch.fnmatch(f, '*.mp3'): files.append(f)
+getFiles(os.path.expanduser("~/Music"))
+random.shuffle(files) # shuffle some more
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
+i = 0
 
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+def songs():
+        global i, files
+        while True:
+                yield Song(files[i])
+                i += 1
+                if i >= len(files): i = 0
 
-class Singleton:
-    # Here will be the instance stored.
-    __instance = None
+def peekSongs(n):
+        nexti = i + 1
+        if nexti >= len(files): nexti = 0
+        return map(Song, (files[nexti:] + files[:nexti])[:n])
 
-    @staticmethod
-    def getInstance():
-        """ Static access method. """
-        if Singleton.__instance == None:
-            Singleton()
-        return Singleton.__instance 
+# Create our Music Player.
+player = musicplayer.createPlayer()
+player.outSamplerate = 96000 # support high quality :)
+player.queue = songs()
+player.peekQueue = peekSongs
 
-    def __init__(self):
-        """ Virtually private constructor. """
-        if Singleton.__instance != None:
-            raise Exception("This class is a singleton!")
-        else:
-            Singleton.__instance = self
+# Setup a simple GUI.
+window = Tkinter.Tk()
+window.title("Music Player")
+songLabel = Tkinter.StringVar()
 
-# A little testing
+def onSongChange(**kwargs): songLabel.set(pprint.pformat(player.curSongMetadata))
+def cmdPlayPause(*args): player.playing = not player.playing
+def cmdNext(*args): player.nextSong()
 
-s = Singleton() # Ok
-#Singleton() # will raise exception
-print(s)
+Tkinter.Label(window, textvariable=songLabel).pack()
+Tkinter.Button(window, text="Play/Pause", command=cmdPlayPause).pack()
+Tkinter.Button(window, text="Next", command=cmdNext).pack()
 
-s = Singleton.getInstance()
-print(s)
-
-s = Singleton.getInstance()
-print(s) # will print the same instance as before
+player.onSongChange = onSongChange
+player.playing = True # start playing
+window.mainloop()

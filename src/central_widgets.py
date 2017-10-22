@@ -1,4 +1,5 @@
 import data
+import numpy as np
 
 from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction, QComboBox
 from PyQt5.QtGui import QIcon, QPixmap
@@ -13,7 +14,7 @@ class FormWidget(QWidget):
         self.layout = QHBoxLayout(self)
         self.leftLayout = QVBoxLayout(self)
         self.rightLayout = QVBoxLayout(self)
-
+        self.data = data.LipSyncData.get_instance()
         self.right_layout_init()
         self.left_layout_init()
 
@@ -30,6 +31,7 @@ class FormWidget(QWidget):
 
         run_algorithm_button = QPushButton('Run Algorithm', self)
         run_algorithm_button.setToolTip('Run the selected phoneme recognition algorithm')
+        run_algorithm_button.clicked.connect(self.run_phonema_recognition_algorithm)
 
         self.rightLayout.addWidget(label)
         self.rightLayout.addWidget(comboBox)
@@ -46,22 +48,41 @@ class FormWidget(QWidget):
         # import pdb; pdb.set_trace()
         self.canvas.plot(filename)
 
+    def add_vertical_line(self, sec, remove=True):
+        self.canvas.draw_line(sec, remove)
+
+    def run_phonema_recognition_algorithm(self):
+        self.data.example_dat()
+
 
 class PlotCanvas(FigureCanvas):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
+        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        # self.axes = fig.add_subplot(111)
         self.data = data.LipSyncData.get_instance()
-
-        FigureCanvas.__init__(self, fig)
+        self.fs = 0
+        FigureCanvas.__init__(self, self.fig)
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
     def plot(self, name):
-        ax = self.figure.add_subplot(111)
         # import pdb; pdb.set_trace()
-        ax.plot(self.data.get_audio(), 'b-')
+        ax = self.fig.add_subplot(111)
+        ax.cla()
+        signal, self.fs = self.data.get_audio_fs()
+        time = np.linspace(0, len(signal) / self.fs, num=len(signal))
+        ax.plot(time, signal, 'b-')
         ax.set_title(name)
+        ax.set_xlabel('seconds')
+        self.draw()
+        ax.axvline(x=0, color='r')
+
+    def draw_line(self, sec, remove=True):
+        # import pdb; pdb.set_trace()
+        ax = self.fig.add_subplot(111)
+        if remove:
+            ax.lines[1].remove()
+        ax.axvline(x=sec, color='r')
         self.draw()
