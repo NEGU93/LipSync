@@ -1,31 +1,11 @@
 import sys
-import wave
-import struct
+import data
 import central_widgets
-import numpy as np
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QAction, QFileDialog, QGroupBox, QHBoxLayout, \
     QVBoxLayout, QWidget, QSizePolicy
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
-
-
-class LipSyncData:
-    def __init__(self):
-        self.audio = []
-
-    def open_wav(self, path):
-        sound_frames, fs = self.wav_to_floats(path)
-        self.audio = np.asarray(sound_frames)
-
-    def wav_to_floats(self, path):
-        w = wave.open(path)
-        fs = w.getframerate()
-        astr = w.readframes(w.getnframes())
-        # convert binary chunks to short
-        a = struct.unpack("%ih" % (w.getnframes() * w.getnchannels()), astr)
-        a = [float(val) / pow(2, 15) for val in a]
-        return a, fs
 
 
 class App(QMainWindow):
@@ -36,7 +16,7 @@ class App(QMainWindow):
         self.top = 100
         self.width = 640
         self.height = 400
-        self.data = LipSyncData()
+        self.data = data.LipSyncData.get_instance()
         self.form_widget = central_widgets.FormWidget(self)
         self.toolbar = self.addToolBar('Main Toolbar')
         self.init_gui()
@@ -100,7 +80,8 @@ class App(QMainWindow):
         path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav', directory='../sounds/')
         self.data.open_wav(path)
         filename = path.split('/')
-        self.form_widget.plot_data(self.data. audio, filename[len(filename) - 1])
+        # import pdb; pdb.set_trace()
+        self.form_widget.plot_data(filename[len(filename) - 1])
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

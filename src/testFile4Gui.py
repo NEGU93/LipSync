@@ -1,49 +1,48 @@
-import sys
-from PyQt4 import QtGui, QtCore
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+# Example of Singleton design pattern
+# Copyright (C) 2011 Radek Pazdera
 
-class Window(QtGui.QMainWindow):
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+class Singleton:
+    # Here will be the instance stored.
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if Singleton.__instance == None:
+            Singleton()
+        return Singleton.__instance 
+
     def __init__(self):
-        super(Window, self).__init__()
-        self.setGeometry(50, 50, 500, 300)
-        self.setWindowTitle("PyQT tuts!")
+        """ Virtually private constructor. """
+        if Singleton.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            Singleton.__instance = self
 
-        extractAction = QtGui.QAction("&GET TO THE CHOPPAH!!!", self)
-        extractAction.setShortcut("Ctrl+Q")
-        extractAction.setStatusTip('Leave The App')
-        extractAction.triggered.connect(self.close_application)
+# A little testing
 
-        self.statusBar()
+s = Singleton() # Ok
+#Singleton() # will raise exception
+print(s)
 
-        mainMenu = self.menuBar()
-        fileMenu = mainMenu.add_menu('&File')
-        fileMenu.addAction(extractAction)
+s = Singleton.getInstance()
+print(s)
 
-        self.home()
-
-    def home(self):
-        btn = QtGui.QPushButton("Quit", self)
-        btn.clicked.connect(self.close_application)
-        btn.resize(btn.minimumSizeHint())
-        btn.move(0, 100)
-
-        extractAction = QtGui.QAction(QtGui.QIcon('todachoppa.png'), 'Flee the Scene', self)
-        extractAction.triggered.connect(self.close_application)
-
-        self.toolBar = self.addToolBar("Extraction")
-        self.toolBar.addAction(extractAction)
-
-        self.show()
-
-    def close_application(self):
-        print("whooaaaa so custom!!!")
-        sys.exit()
-
-
-def run():
-    app = QtGui.QApplication(sys.argv)
-    GUI = Window()
-    sys.exit(app.exec_())
-
-
-run()
+s = Singleton.getInstance()
+print(s) # will print the same instance as before

@@ -1,3 +1,5 @@
+import data
+
 from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction, QComboBox
 from PyQt5.QtGui import QIcon, QPixmap
 
@@ -40,15 +42,16 @@ class FormWidget(QWidget):
         self.leftLayout.addWidget(self.canvas)
         self.layout.addLayout(self.leftLayout)
 
-    def plot_data(self, data, filename):
+    def plot_data(self, filename):
         # import pdb; pdb.set_trace()
-        self.canvas.plot(data, filename)
+        self.canvas.plot(filename)
 
 
 class PlotCanvas(FigureCanvas):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
+        self.data = data.LipSyncData.get_instance()
 
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
@@ -56,8 +59,9 @@ class PlotCanvas(FigureCanvas):
         FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
-    def plot(self, data_to_plot, name):
+    def plot(self, name):
         ax = self.figure.add_subplot(111)
-        ax.plot(data_to_plot, 'b-')
+        # import pdb; pdb.set_trace()
+        ax.plot(self.data.get_audio(), 'b-')
         ax.set_title(name)
         self.draw()
