@@ -51,6 +51,9 @@ class App(QMainWindow):
         file_menu.addAction(open_button)
         # Export file
         export_button = QAction('Export', self)
+        export_button.setShortcut("Ctrl+E")
+        export_button.setStatusTip("Export as dat file")
+        export_button.triggered.connect(self.file_export)
         file_menu.addAction(export_button)
         # Exit Button
         exit_button = QAction(QIcon('exit24.png'), 'Exit', self)
@@ -64,6 +67,7 @@ class App(QMainWindow):
         open_button.triggered.connect(self.file_open)
 
         export_button = QAction(QIcon('../images/icons/extract.svg'), 'export File', self)
+        export_button.triggered.connect(self.file_export)
 
         self.play_button = QAction(QIcon('../images/icons/play_circle.svg'), 'PLay Audio', self)
         self.play_button.triggered.connect(self.play_audio)
@@ -93,14 +97,19 @@ class App(QMainWindow):
             self.stop_button.setEnabled(True)
             self.pause_button.setEnabled(True)
 
+    def file_export(self):
+        path, _ = QFileDialog.getSaveFileName(self, 'Export File', filter='*.dat', directory='../out/')
+        if path is not '':
+            self.data.export_dat(path)
+
     def play_audio(self):
         self.data.play_audio()
         count = 0
         while count < len(self.data.dat) and self.data.get_current_time() != 0.0:
             # import pdb; pdb.set_trace()
-            if self.data.dat[count][0] >= self.data.get_current_index():
+            if self.data.dat[count][0] <= self.data.get_current_index():
                 # import pdb; pdb.set_trace()
-                self.form_widget.add_vertical_line(self.data.get_current_time(), remove=False)
+                # self.form_widget.add_vertical_line(self.data.get_current_time(), remove=False)
                 print(self.data.dat[count][1].name)
                 count = count + 1
 

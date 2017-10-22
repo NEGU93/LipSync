@@ -80,6 +80,15 @@ class LipSyncData:
     def get_current_index(self):
         return int(self.get_current_time() * self.fs)
 
+    def export_dat(self, path):
+        file = open(path, "w")
+
+        file.write('MohoSwitch1\n')
+        for i in range(0, len(self.dat)):
+            file.write(str(self.dat[i][0]) + ' ' + self.dat[i][1].name + '\n')
+
+        file.close()
+
     def example_dat(self):
         self.dat = [
             (0, Phonemes.rest),
