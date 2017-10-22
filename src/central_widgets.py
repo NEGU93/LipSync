@@ -15,15 +15,31 @@ class FormWidget(QWidget):
         self.leftLayout = QVBoxLayout(self)
         self.rightLayout = QVBoxLayout(self)
         self.data = data.LipSyncData.get_instance()
-        self.right_layout_init()
+
         self.left_layout_init()
+        self.right_layout_init()
+
+        self.dict = {}
+        self.initialize_dictionary()
 
         self.setLayout(self.layout)
 
-    def left_layout_init(self):
-        label = QLabel(self)
+    def initialize_dictionary(self):
+        self.dict[data.Phonemes.AI.name] = QPixmap('../images/mouth_types/blair_a_i.jpg')
+        self.dict[data.Phonemes.E.name] = QPixmap('../images/mouth_types/blair_e.jpg')
+        self.dict[data.Phonemes.U.name] = QPixmap('../images/mouth_types/blair_u.jpg')
+        self.dict[data.Phonemes.O.name] = QPixmap('../images/mouth_types/blair_o.jpg')
+        self.dict[data.Phonemes.etc.name] = QPixmap('../images/mouth_types/blair_c_d_g_k_n_r_s_th_y_z.jpg')
+        self.dict[data.Phonemes.FV.name] = QPixmap('../images/mouth_types/blair_f_v_d_th.jpg')
+        self.dict[data.Phonemes.MBP.name] = QPixmap('../images/mouth_types/blair_m_b_p.jpg')
+        self.dict[data.Phonemes.L.name] = QPixmap('../images/mouth_types/blair_l_d_th.jpg')
+        self.dict[data.Phonemes.WQ.name] = QPixmap('../images/mouth_types/blair_w_q.jpg')
+        self.dict[data.Phonemes.rest.name] = QPixmap('../images/mouth_types/blair_rest.jpg')
+
+    def right_layout_init(self):
+        self.label = QLabel(self)
         pixmap = QPixmap('../images/mouth_types.jpg')
-        label.setPixmap(pixmap)
+        self.label.setPixmap(pixmap)
 
         comboBox = QComboBox(self)
         comboBox.addItem('Algorithm 1')
@@ -33,13 +49,20 @@ class FormWidget(QWidget):
         run_algorithm_button.setToolTip('Run the selected phoneme recognition algorithm')
         run_algorithm_button.clicked.connect(self.run_phonema_recognition_algorithm)
 
-        self.rightLayout.addWidget(label)
+        self.rightLayout.addWidget(self.label)
         self.rightLayout.addWidget(comboBox)
         self.rightLayout.addWidget(run_algorithm_button)
 
         self.layout.addLayout(self.rightLayout)
 
-    def right_layout_init(self):
+    def update_label(self, phoneme_name):
+        # import pdb; pdb.set_trace()
+        pixmap = self.dict[phoneme_name]
+        self.label.setPixmap(pixmap)
+
+        self.label.update()
+
+    def left_layout_init(self):
         self.canvas = PlotCanvas()
         self.leftLayout.addWidget(self.canvas)
         self.layout.addLayout(self.leftLayout)

@@ -33,7 +33,7 @@ class LipSyncData:
         else:
             LipSyncData.__instance = self
         self.audio = []
-        self.fs = 44100
+        self.fs = 8000
         self.start_time = 0.0
         self.audio_time = 0.0
         self.dat = [(0, Phonemes.rest)]
@@ -92,7 +92,7 @@ class LipSyncData:
     def example_dat(self):
         self.dat = [
             (0, Phonemes.rest),
-            (10, Phonemes.AI),
+            (100, Phonemes.AI),
             (8000, Phonemes.E),
             (16000, Phonemes.etc),
             (24000, Phonemes.MBP)
