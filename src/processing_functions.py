@@ -83,8 +83,9 @@ def formants_calculator(signal, window, step_size, lpc_order, fs):
                 frame_formants.append(frqs[k])
 
         formants.append(frame_formants)
-        # plot((0: 1e4 - 1)*Fs / 1e4, abs(fft(x1, 1e4)) / max(abs(fft(x1, 1e4))));
-        # spect = 1. / abs((fft(A, 1e4)));
-        # plot((0: 1e4 - 1)*Fs / 1e4, spect / max(spect));
+        # plt.plot(np.linspace(0, 1e4, int(1e4))*fs / 1e4, np.abs(np.fft.fft(frame_signal, int(1e4))) / max(abs(np.fft.fft(frame_signal, int(1e4)))))
+        # spect = np.array(np.divide(1, np.abs((np.fft.fft(h.numerator, int(1e4))))))
+        # plt.plot(np.linspace(0, 1e4, int(1e4))*fs / 1e4, spect / max(spect))
+        # plt.show()
 
     return formants

@@ -1,4 +1,5 @@
 import data
+import process
 import numpy as np
 
 from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction, QComboBox
@@ -75,7 +76,8 @@ class FormWidget(QWidget):
         self.canvas.draw_line(sec, remove)
 
     def run_phonema_recognition_algorithm(self):
-        self.data.example_dat()
+        # self.data.example_dat()
+        process.process_audio()
         for i in range(0, len(self.data.dat)):
             self.add_vertical_line(self.data.dat[i][0] / self.data.fs, remove=False)
 
