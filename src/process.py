@@ -23,6 +23,10 @@ def wav_to_floats(wave_file):
     return a, fs
 
 
+def most_common(lst):
+    return max(set(lst), key=lst.count)
+
+
 def process_audio():
     # filename = '../sounds/vocales.wav'
     datos = data.LipSyncData.get_instance()
@@ -63,15 +67,23 @@ def process_audio():
 
     # formantss = formants_freq[300:-1]
 
-    for it in range(0, len(sound_frames_formants)):
+    average_size = int(round(100e-3*datos.fs)) #length of a phoneme
+    sound_frames_average = [0] * len(datos.audio)
+    for it in range(0, int(math.ceil(len(sound_frames_formants) / average_size))):
+        formant_average = sound_frames_formants[it * average_size:min((it+1) * average_size, len(sound_frames_formants))]
+        average = most_common(formant_average)
+        sound_frames_average[it * average_size:min((it + 1) * average_size, len(sound_frames_formants))] = \
+            [average] * (min((it + 1) * average_size, len(sound_frames_formants)) - it * average_size)
+
+    for it in range(0, len(sound_frames_average)):
         if it == 0:
-            prev = sound_frames_formants[it]
+            prev = sound_frames_average[it]
         else:
-            # if prev != sound_frames_formants[it] and prev != sound_frames_formants[min(it+1, len(sound_frames_formants))] \
-            #         and prev != sound_frames_formants[min(it+1, len(sound_frames_formants))]:
-            if prev != sound_frames_formants[it]:
-                prev = sound_frames_formants[it]
-                datos.append_dat(it, sound_frames_formants[it])
+            if prev != sound_frames_average[it] and prev != sound_frames_average[min(it+1, len(sound_frames_average))] \
+                    and prev != sound_frames_average[min(it+2, len(sound_frames_average))]:
+            # if prev != sound_frames_formants[it]:
+                prev = sound_frames_average[it]
+                datos.append_dat(it, sound_frames_average[it])
 
 
     # print(st_energy.size)
