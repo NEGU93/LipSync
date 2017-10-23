@@ -1,1 +1,2 @@
 https://www.mathworks.com/help/signal/ug/formant-estimation-with-lpc-coefficients.html
+http://www.asel.udel.edu/icslp/cdrom/vol4/301/a301.pdf

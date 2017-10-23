@@ -49,10 +49,10 @@ def formants_calculator(signal, window, step_size, lpc_order, fs):
     for it in range(0, int(math.ceil(signal.size / step_size))):
         frame_signal = signal[it*step_size:min(it*step_size + window.size, signal.size)]
         # import pdb; pdb.set_trace()
-        if it == 325:
-            print(1)
-        elif it == 423:
-            print(2)
+        # if it == 325:
+        #     print(1)
+        # elif it == 423:
+        #     print(2)
 
         if window.size != frame_signal.size:
             window = window[0:frame_signal.size]
