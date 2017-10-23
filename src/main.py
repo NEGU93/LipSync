@@ -109,7 +109,6 @@ class App(QMainWindow):
             # import pdb; pdb.set_trace()
             if self.data.dat[count][0] <= self.data.get_current_index():
                 # import pdb; pdb.set_trace()
-                # self.form_widget.add_vertical_line(self.data.get_current_time(), remove=False)
                 self.form_widget.update_label(self.data.dat[count][1].name)
                 print(self.data.dat[count][1].name)
                 count = count + 1
