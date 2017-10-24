@@ -25,7 +25,7 @@ class App(QMainWindow):
     def init_gui(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(QIcon('../images/icons/body_6-512.png'))
+        self.setWindowIcon(QIcon('../images/icons/rolling.png'))
         self.add_menu()
         self.add_toolbar()
 
