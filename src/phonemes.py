@@ -28,7 +28,7 @@ class PhonemeI(Phoneme):
 class PhonemeO(Phoneme):
     def __init__(self):
         # Phoneme.__init__(self, '/o/', np.array([411, 832, 2376]))
-        Phoneme.__init__(self, '/o/', np.array([400, 640]))
+        Phoneme.__init__(self, '/o/', np.array([360, 640]))
 
 
 class PhonemeU(Phoneme):

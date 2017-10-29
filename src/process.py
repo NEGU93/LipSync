@@ -35,7 +35,7 @@ def process_audio():
     L = round(20e-3*datos.fs)
     window = signal.hann(L)
     step_size = round(L/2)
-    lpc_order = 12
+    lpc_order = 16
     formants_freq = formants_calculator(datos.audio, window, step_size, lpc_order, datos.fs)
     formants = list(formants_freq)
     energy_time, energy_frames = short_time_energy(datos.audio, window, step_size)
