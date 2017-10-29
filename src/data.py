@@ -40,9 +40,9 @@ class LipSyncData:
         self.playing = False
 
     def open_wav(self, path):
-        sound_frames, fs = self.wav_to_floats(path)
+        sound_frames, self.fs = self.wav_to_floats(path)
         self.audio = np.asarray(sound_frames)
-        self.audio_time = len(self.audio) / fs
+        self.audio_time = len(self.audio) / self.fs
 
     def get_audio(self):
         return self.audio
@@ -52,12 +52,12 @@ class LipSyncData:
 
     def wav_to_floats(self, path):
         w = wave.open(path)
-        self.fs = w.getframerate()
+        fs = w.getframerate()
         astr = w.readframes(w.getnframes())
         # convert binary chunks to short
         a = struct.unpack("%ih" % (w.getnframes() * w.getnchannels()), astr)
         a = [float(val) / pow(2, 15) for val in a]
-        return a, self.fs
+        return a, fs
 
     def play_audio(self):
         self.playing = True
