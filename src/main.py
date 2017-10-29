@@ -25,7 +25,7 @@ class App(QMainWindow):
     def init_gui(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(QIcon('../images/icons/body_6-512.png'))
+        self.setWindowIcon(QIcon('../images/icons/rolling.png'))
         self.add_menu()
         self.add_toolbar()
 
@@ -110,7 +110,7 @@ class App(QMainWindow):
             if self.data.dat[count][0] <= self.data.get_current_index():
                 # import pdb; pdb.set_trace()
                 self.form_widget.update_label(self.data.dat[count][1].name)
-                print(self.data.dat[count][1].name)
+                print(str(self.data.dat[count][0]) + ' ' + self.data.dat[count][1].name)
                 count = count + 1
 
     def stop_audio(self):

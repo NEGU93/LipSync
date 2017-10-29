@@ -2,7 +2,7 @@ import data
 import process
 import numpy as np
 
-from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction, QComboBox
+from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction, QComboBox, QApplication
 from PyQt5.QtGui import QIcon, QPixmap
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -60,8 +60,8 @@ class FormWidget(QWidget):
         # import pdb; pdb.set_trace()
         pixmap = self.dict[phoneme_name]
         self.label.setPixmap(pixmap)
-
         self.label.update()
+        QApplication.processEvents()
 
     def left_layout_init(self):
         self.canvas = PlotCanvas()

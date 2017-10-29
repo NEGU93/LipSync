@@ -1,0 +1,2 @@
+pitch: quepstrum 
+Duration: fs
