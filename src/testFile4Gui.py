@@ -1,117 +1,137 @@
+#!/usr/bin/env python
+
+"""
+@author: Diego Castaneda (dfcastap@gmail.com)
+
+This script creates a basic GUI
+
+Based on http://matplotlib.org/examples/user_interfaces/embedding_in_qt5.html
+"""
+
+from __future__ import unicode_literals
 import sys
-import random
+import os
 import matplotlib
-matplotlib.use("Qt5Agg")
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget
-from numpy import arange, sin, pi
+
+# Make sure that we are using QT5
+matplotlib.use('Qt5Agg')
+from PyQt5 import QtCore, QtWidgets
+
+import numpy as np
+import pylab as plt
+
+# Load matplotlib Qt stuff:
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
-class MyMplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
+# Set a name to out program based on its filename:
+progname = os.path.basename(sys.argv[0])
+
+
+
+class plotCanvas(FigureCanvas):
+    """Simple canvas with a sine plot."""
+
+    def __init__(self, parent=None, width=5, height=5, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi,facecolor="white")
         self.axes = fig.add_subplot(111)
-        # We want the axes cleared every time plot() is called
-        self.axes.hold(False)
+        #self.make_contour("/home/castaned/Documents/code_lab/qt/c_data.dat")
 
-        self.compute_initial_figure()
-
-        #
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
-
-        FigureCanvas.setSizePolicy(self,
-                QSizePolicy.Expanding,
-                QSizePolicy.Expanding)
+        FigureCanvas.setSizePolicy(self,QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+        self.axes.axis('off')
 
-    def compute_initial_figure(self):
-        pass
+    def make_contour(self,fname):
+        """
+            Loads the file at fname and plots its contents. It uses
+            matplotlib's contourf function to plot X, Y, Z contained in
+            the file. Each coordinate is expected to be a meshgrid.
+        """
+        data = np.genfromtxt(fname)
+        l = len(data[:,0])/3
+        x = data[0:l,:]
+        y = data[l:2*l,:]
+        z = data[2*l:3*l,:]
 
-class MyStaticMplCanvas(MyMplCanvas):
-    """Simple canvas with a sine plot."""
-    def compute_initial_figure(self):
-        t = arange(0.0, 3.0, 0.01)
-        s = sin(2*pi*t)
-        self.axes.plot(t, s)
+        self.axes.contourf(x,y,z, 100, cmap=plt.cm.gnuplot,
+                                              vmax=np.max(z), vmin=np.min(z))
+        self.axes.contourf(x,-y,z, 100, cmap=plt.cm.gnuplot,
+                                              vmax=np.max(z), vmin=np.min(z))
+        self.axes.contourf(-x,-y,z, 100, cmap=plt.cm.gnuplot,
+                                              vmax=np.max(z), vmin=np.min(z))
+        self.axes.contourf(-x,y,z, 100, cmap=plt.cm.gnuplot,
+                                              vmax=np.max(z), vmin=np.min(z))
 
-
-class MyDynamicMplCanvas(MyMplCanvas):
-    """A canvas that updates itself every second with a new plot."""
-    def __init__(self, *args, **kwargs):
-        MyMplCanvas.__init__(self, *args, **kwargs)
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.update_figure)
-        timer.start(1000)
-
-    def compute_initial_figure(self):
-        self.axes.plot([0, 1, 2, 3], [1, 2, 0, 4], 'r')
-
-    def update_figure(self):
-        # Build a list of 4 random integers between 0 and 10 (both inclusive)
-        l = [random.randint(0, 10) for i in range(4)]
-
-        self.axes.plot([0, 1, 2, 3], l, 'r')
         self.draw()
 
-class ApplicationWindow(QMainWindow):
+
+
+class ApplicationWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        QMainWindow.__init__(self)
+        """
+            Setup the main window with Qt widgets
+        """
+        QtWidgets.QMainWindow.__init__(self)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("application main window")
+        self.setWindowTitle("Plot - countourf")
+        self.main_widget = QtWidgets.QWidget(self)
 
-        self.file_menu = QMenu('&File', self)
-        self.file_menu.addAction('&Quit', self.fileQuit,
-                QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
-        self.menuBar().addMenu(self.file_menu)
+        # Box will contain the elements we want to include in a vertical
+        # layout.
 
-        self.help_menu = QMenu('&Help', self)
-        self.menuBar().addSeparator()
-        self.menuBar().addMenu(self.help_menu)
+        box = QtWidgets.QVBoxLayout(self.main_widget)
 
-        self.help_menu.addAction('&About', self.about)
+        # Init. the plotCanvas class and add the Matplotlib toolbar:
+        self.sc = plotCanvas(self.main_widget, width=5, height=5, dpi=100)
+        mpl_toolbar = NavigationToolbar(self.sc, self.main_widget)
 
-        self.main_widget = QWidget(self)
 
-        l = QVBoxLayout(self.main_widget)
-        sc = MyStaticMplCanvas(self.main_widget, width=5, height=4, dpi=100)
-        dc = MyDynamicMplCanvas(self.main_widget, width=5, height=4, dpi=100)
-        l.addWidget(sc)
-        l.addWidget(dc)
 
+        # Add a nice menu bar to open a file to plot and exit options:
+        menubar = self.menuBar()
+        fileMenu = menubar.addMenu('&File')
+        fileMenu.addAction('&Open', self.filePick,
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_O)
+        fileMenu.addAction('&Quit', self.fileQuit,
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
+
+        # Add the Qt widgets to the main window
+        box.addWidget(self.sc)
+        box.addWidget(mpl_toolbar)
+
+        # Set the focus on the main widget:
         self.main_widget.setFocus()
         self.setCentralWidget(self.main_widget)
 
-        self.statusBar().showMessage("All hail matplotlib!", 2000)
+    def filePick(self):
+        """
+            Generic code for a file picker. In this case
+            once a file is selected, the directory of the file is passed
+            to the make_contour function on the plotCanvas class for
+            plotting.
+        """
+        curr_path = os.getcwd()
+        fname = QtWidgets.QFileDialog.getOpenFileName(self,
+                                                      'Open file', curr_path)
+
+        if fname[0]:
+            self.sc.make_contour(fname[0])
+
 
     def fileQuit(self):
+        """
+            Exit the application
+        """
         self.close()
 
-    def closeEvent(self, ce):
-        self.fileQuit()
 
-    def about(self):
-        QMessageBox.about(self, "About",
-  """embedding_in_qt5.py example
-  Copyright 2015 BoxControL
+qApp = QtWidgets.QApplication(sys.argv)
 
-  This program is a simple example of a Qt5 application embedding matplotlib
-  canvases. It is base on example from matplolib documentation, and initially was
-  developed from Florent Rougon and Darren Dale.
-
-  http://matplotlib.org/examples/user_interfaces/embedding_in_qt4.html
-
-  It may be used and modified with no restriction; raw copies as well as
-  modified versions may be distributed without limitation."""
-  )
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    aw = ApplicationWindow()
-    aw.setWindowTitle("PyQt5 Matplot Example")
-    aw.show()
-    #sys.exit(qApp.exec_())
-    app.exec_()
+aw = ApplicationWindow()
+aw.setWindowTitle("%s" % progname)
+aw.show()
+sys.exit(qApp.exec_())

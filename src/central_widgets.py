@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLab
 from PyQt5.QtGui import QIcon, QPixmap
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
 
@@ -63,8 +64,14 @@ class FormWidget(QWidget):
         self.label.update()
 
     def left_layout_init(self):
-        self.canvas = PlotCanvas()
-        self.leftLayout.addWidget(self.canvas)
+        self.plot_widget = QWidget(self)
+        box = QVBoxLayout(self.plot_widget)
+        self.canvas = PlotCanvas(self.plot_widget)
+        mpl_toolbar = NavigationToolbar(self.canvas, self.plot_widget)
+
+        box.addWidget(self.canvas)
+        box.addWidget(mpl_toolbar)
+        self.leftLayout.addWidget(self.plot_widget)
         self.layout.addLayout(self.leftLayout)
 
     def plot_data(self, filename):
@@ -90,7 +97,7 @@ class FormWidget(QWidget):
 class PlotCanvas(FigureCanvas):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
-        # self.axes = fig.add_subplot(111)
+        self.axes = self.fig.add_subplot(111)
         self.data = data.LipSyncData.get_instance()
         self.fs = 0
         FigureCanvas.__init__(self, self.fig)
@@ -98,6 +105,7 @@ class PlotCanvas(FigureCanvas):
 
         FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+        self.axes.axis('off')
 
     def plot(self, name):
         # import pdb; pdb.set_trace()
