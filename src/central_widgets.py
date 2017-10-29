@@ -61,7 +61,6 @@ class FormWidget(QWidget):
         pixmap = self.dict[phoneme_name]
         self.label.setPixmap(pixmap)
         self.label.update()
-        QApplication.processEvents()
 
     def left_layout_init(self):
         self.canvas = PlotCanvas()
@@ -78,8 +77,14 @@ class FormWidget(QWidget):
     def run_phonema_recognition_algorithm(self):
         # self.data.example_dat()
         process.process_audio()
-        for i in range(0, len(self.data.dat)):
+        for i in range(1, len(self.data.dat)):
             self.add_vertical_line(self.data.dat[i][0] / self.data.fs, remove=False)
+
+    def draw_vertical_line(self, sec, remove=True, color='r'):
+        self.canvas.draw_line(sec, remove, color)
+
+    def remove_line(self):
+        self.canvas.remove_line()
 
 
 class PlotCanvas(FigureCanvas):
@@ -105,10 +110,16 @@ class PlotCanvas(FigureCanvas):
         ax.set_xlabel('seconds')
         self.draw()
 
-    def draw_line(self, sec, remove=True):
+    def draw_line(self, sec, remove=True, color='r'):
         # import pdb; pdb.set_trace()
         ax = self.fig.add_subplot(111)
         if remove and len(ax.lines) > 1:
-            ax.lines[1].remove()
-        ax.axvline(x=sec, color='r')
+            ax.lines[len(ax.lines)-1].remove()
+        ax.axvline(x=sec, color=color)
+        self.draw()
+
+    def remove_line(self):
+        ax = self.fig.add_subplot(111)
+        if len(ax.lines) > 1:
+            ax.lines[len(ax.lines)-1].remove()
         self.draw()

@@ -105,13 +105,15 @@ class App(QMainWindow):
     def play_audio(self):
         self.data.play_audio()
         count = 0
+        self.form_widget.draw_vertical_line(self.data.get_current_time(), remove=False, color='g')
         while count < len(self.data.dat) and self.data.get_current_time() != 0.0:
-            # import pdb; pdb.set_trace()
             if self.data.dat[count][0] <= self.data.get_current_index():
-                # import pdb; pdb.set_trace()
                 self.form_widget.update_label(self.data.dat[count][1].name)
                 print(str(self.data.dat[count][0]) + ' ' + self.data.dat[count][1].name)
                 count = count + 1
+            self.form_widget.draw_vertical_line(self.data.get_current_time(), color='g')
+            QApplication.processEvents()
+        self.form_widget.remove_line()
 
     def stop_audio(self):
         self.data.stop_audio()

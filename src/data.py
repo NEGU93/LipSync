@@ -37,6 +37,7 @@ class LipSyncData:
         self.start_time = 0.0
         self.audio_time = 0.0
         self.dat = [(0, Phonemes.rest)]
+        self.playing = False
 
     def open_wav(self, path):
         sound_frames, fs = self.wav_to_floats(path)
@@ -59,10 +60,12 @@ class LipSyncData:
         return a, self.fs
 
     def play_audio(self):
+        self.playing = True
         sd.play(self.audio, self.fs)
         self.start_time = sd.get_stream().time
 
     def stop_audio(self):
+        self.playing = False
         sd.stop()
 
     def get_status(self):
@@ -72,10 +75,13 @@ class LipSyncData:
         return sd.get_stream()
 
     def get_current_time(self):
-        temp_time = sd.get_stream().time
-        if (self.start_time + self.audio_time) < temp_time:
+        if self.playing:
+            temp_time = sd.get_stream().time
+            if (self.start_time + self.audio_time) < temp_time:
+                return 0.0
+            return temp_time - self.start_time
+        else:
             return 0.0
-        return temp_time - self.start_time
 
     def get_current_index(self):
         return int(self.get_current_time() * self.fs)
