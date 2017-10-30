@@ -1,5 +1,5 @@
 import data
-import process
+import vocal_lpc_phonemes
 import numpy as np
 
 from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction, QComboBox, QApplication
@@ -83,7 +83,7 @@ class FormWidget(QWidget):
 
     def run_phonema_recognition_algorithm(self):
         # self.data.example_dat()
-        process.process_audio()
+        vocal_lpc_phonemes.vocal_phonemes()
         for i in range(1, len(self.data.dat)):
             self.add_vertical_line(self.data.dat[i][0] / self.data.fs, remove=False)
 
