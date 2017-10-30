@@ -1,15 +1,10 @@
-import numpy as np
 from scipy import signal
-from scipy.fftpack import fft, fftshift
-import matplotlib.pyplot as plt
 import math
 import wave
 import data
-import sys
 import struct
 from processing_functions import short_time_energy
 from processing_functions import formants_calculator
-from audiolazy import lazy_lpc
 from phonemes import *
 
 
@@ -27,7 +22,7 @@ def most_common(lst):
     return max(set(lst), key=lst.count)
 
 
-def process_audio():
+def vocal_phonemes():
     # filename = '../sounds/vocales.wav'
     datos = data.LipSyncData.get_instance()
     # sound_frames, fs = wav_to_floats(filename)
