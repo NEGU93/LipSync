@@ -8,16 +8,6 @@ from processing_functions import formants_calculator
 from phonemes import *
 
 
-def wav_to_floats(wave_file):
-    w = wave.open(wave_file)
-    fs = w.getframerate()
-    astr = w.readframes(w.getnframes())
-    # convert binary chunks to short
-    a = struct.unpack("%ih" % (w.getnframes()* w.getnchannels()), astr)
-    a = [float(val) / pow(2, 15) for val in a]
-    return a, fs
-
-
 def most_common(lst):
     return max(set(lst), key=lst.count)
 
