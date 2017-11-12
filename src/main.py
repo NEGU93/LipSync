@@ -7,6 +7,18 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QAction, QFi
     QVBoxLayout, QWidget, QSizePolicy
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
+from PyQt5 import QtWidgets
+
+
+def catch_exceptions(t, val, tb):
+    QtWidgets.QMessageBox.critical(None,
+                                   "An exception was raised",
+                                   "Exception type: {}".format(t))
+    old_hook(t, val, tb)
+
+
+old_hook = sys.excepthook
+sys.excepthook = catch_exceptions
 
 
 class App(QMainWindow):

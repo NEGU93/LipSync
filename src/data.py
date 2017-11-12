@@ -33,6 +33,8 @@ class LipSyncData:
         else:
             LipSyncData.__instance = self
         self.audio = []
+        self.audio_int_right = []
+        self.audio_int_left = []
         self.fs = 8000
         self.start_time = 0.0
         self.audio_time = 0.0
@@ -58,6 +60,12 @@ class LipSyncData:
         a = struct.unpack("%ih" % (w.getnframes() * w.getnchannels()), astr)
         a = [float(val) / pow(2, 15) for val in a]
         return a, self.fs
+
+    def wav_to_ints(self, path):
+        w = wave.open(path, 'r')
+        self.fs = w.getframerate()
+        da = np.fromstring(w.readframes(w.getnframes()), dtype=np.int16)
+        self.audio_int_right, self.audio_int_left = da[0::2], da[1::2]  # left and right channel
 
     def play_audio(self):
         self.playing = True
