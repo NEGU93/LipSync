@@ -1,2 +1,6 @@
 pitch: quepstrum 
 Duration: fs
+
+tensor flow
+mfcc
+sequencia de entrenamiento
