@@ -33,6 +33,9 @@ class LipSyncData:
         else:
             LipSyncData.__instance = self
         self.audio = []
+        self.audio_right = []
+        self.audio_left = []
+        self.audio_int = []
         self.audio_int_right = []
         self.audio_int_left = []
         self.fs = 8000
@@ -43,6 +46,7 @@ class LipSyncData:
 
     def open_wav(self, path):
         sound_frames, fs = self.wav_to_floats(path)
+        self.wav_to_ints(path)
         self.audio = np.asarray(sound_frames)
         self.audio_time = len(self.audio) / fs
 
@@ -59,13 +63,21 @@ class LipSyncData:
         # convert binary chunks to short
         a = struct.unpack("%ih" % (w.getnframes() * w.getnchannels()), astr)
         a = [float(val) / pow(2, 15) for val in a]
-        return a, self.fs
+        if w.getnchannels() == 1:  # mono
+            return a, self.fs
+        else:  # stereo
+            self.audio_right = np.asarray(a[0::2])
+            self.audio_left = np.asarray(a[1::2])
+            return a, self.fs
 
     def wav_to_ints(self, path):
         w = wave.open(path, 'r')
         self.fs = w.getframerate()
         da = np.fromstring(w.readframes(w.getnframes()), dtype=np.int16)
-        self.audio_int_right, self.audio_int_left = da[0::2], da[1::2]  # left and right channel
+        if w.getnchannels() == 1:  # mono
+            self.audio_int = da
+        else:  # stereo
+            self.audio_int_right, self.audio_int_left = da[0::2], da[1::2]  # left and right channel
 
     def play_audio(self):
         self.playing = True
