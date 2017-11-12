@@ -1,3 +1,4 @@
+from pitch_change import *
 import wave
 import struct
 import numpy as np
@@ -49,6 +50,7 @@ class LipSyncData:
         self.wav_to_ints(path)
         self.audio = np.asarray(sound_frames)
         self.audio_time = len(self.audio) / fs
+        pitch_change()
 
     def get_audio(self):
         return self.audio
