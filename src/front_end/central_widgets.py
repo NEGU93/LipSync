@@ -1,9 +1,11 @@
 import data
 import vocal_lpc_phonemes
+from pitch_change import pitch_change
 import numpy as np
 
-from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QAction, QComboBox, QApplication
+from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QSlider, QComboBox
 from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtCore import Qt
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -38,19 +40,53 @@ class FormWidget(QWidget):
         self.dict[data.Phonemes.WQ.name] = QPixmap('../images/mouth_types/blair_w_q.jpg')
         self.dict[data.Phonemes.rest.name] = QPixmap('../images/mouth_types/blair_rest.jpg')
 
+    def change_duration(self):
+        # TODO: mati, aca pones tu funcion de cambiar duracion
+        print(self.sld_duration.value())
+        print('Function not implemented yet')
+
+    def change_pitch(self):
+        # TODO: pasar el valor del pitch
+        print(self.sld_pitch.value())
+        pitch_change()
+
     def right_layout_init(self):
+        # Add Duration Slider
+        slider_label_duration = QLabel("Duration")
+        slider_label_duration.setAlignment(Qt.AlignCenter)
+        self.sld_duration = QSlider(Qt.Horizontal, self)
+        self.sld_duration.setMinimum(50)
+        self.sld_duration.setMaximum(200)
+        self.sld_duration.setValue(100)
+        # sld_duration.setTickPosition(QSlider.TicksBelow) # If I want a grid below
+        # sld_duration.setTickInterval(1) # Set an interval
+        self.sld_duration.sliderReleased.connect(self.change_duration)
+
+        # Add Pitch Slider
+        slider_label_pitch = QLabel("Pitch")
+        slider_label_pitch.setAlignment(Qt.AlignCenter)
+        self.sld_pitch = QSlider(Qt.Horizontal, self)
+        self.sld_pitch.sliderReleased.connect(self.change_pitch)
+
+        # Add Image of the mouth
         self.label = QLabel(self)
         pixmap = QPixmap('../images/mouth_types.jpg')
         self.label.setPixmap(pixmap)
 
+        # Add dropdown list of algorithms
         comboBox = QComboBox(self)
         comboBox.addItem('Algorithm 1')
         comboBox.addItem('Algorithm 2')
 
+        # Button to run algorithm
         run_algorithm_button = QPushButton('Run Algorithm', self)
         run_algorithm_button.setToolTip('Run the selected phoneme recognition algorithm')
         run_algorithm_button.clicked.connect(self.run_phonema_recognition_algorithm)
 
+        self.rightLayout.addWidget(slider_label_duration)
+        self.rightLayout.addWidget(self.sld_duration)
+        self.rightLayout.addWidget(slider_label_pitch)
+        self.rightLayout.addWidget(self.sld_pitch)
         self.rightLayout.addWidget(self.label)
         self.rightLayout.addWidget(comboBox)
         self.rightLayout.addWidget(run_algorithm_button)
@@ -78,9 +114,6 @@ class FormWidget(QWidget):
         # import pdb; pdb.set_trace()
         self.canvas.plot(filename)
 
-    def add_vertical_line(self, sec, remove=True):
-        self.canvas.draw_line(sec, remove)
-
     def run_phonema_recognition_algorithm(self):
         # self.data.example_dat()
         vocal_lpc_phonemes.vocal_phonemes()
@@ -89,6 +122,9 @@ class FormWidget(QWidget):
 
     def draw_vertical_line(self, sec, remove=True, color='r'):
         self.canvas.draw_line(sec, remove, color)
+
+    def add_vertical_line(self, sec, remove=True):
+        self.canvas.draw_line(sec, remove)
 
     def remove_line(self):
         self.canvas.remove_line()

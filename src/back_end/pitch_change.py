@@ -32,6 +32,6 @@ def pitch_change():
         ns = np.column_stack((nl, nr)).ravel().astype(np.int16)
         audio_mod.extend(ns)
 
-    sd.play(audio_mod, datos.fs)
-    plt.plot(audio_mod)
-    plt.show()
+    # sd.play(audio_mod, datos.fs)
+    # plt.plot(audio_mod)
+    # plt.show()
