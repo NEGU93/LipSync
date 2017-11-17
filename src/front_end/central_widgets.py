@@ -3,8 +3,9 @@ import vocal_lpc_phonemes
 from pitch_change import pitch_change
 import numpy as np
 
-from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QSlider, QComboBox
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QSlider, QComboBox, \
+    QRadioButton
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -18,10 +19,12 @@ class FormWidget(QWidget):
         self.layout = QHBoxLayout(self)
         self.leftLayout = QVBoxLayout(self)
         self.rightLayout = QVBoxLayout(self)
+        self.rightRightLayout = QVBoxLayout(self)
         self.data = data.LipSyncData.get_instance()
 
         self.left_layout_init()
         self.right_layout_init()
+        self.right_right_layout_init()
 
         self.dict = {}
         self.initialize_dictionary()
@@ -69,9 +72,9 @@ class FormWidget(QWidget):
         self.sld_pitch.sliderReleased.connect(self.change_pitch)
 
         # Add Image of the mouth
-        self.label = QLabel(self)
+        self.mouth1_image = QLabel(self)
         pixmap = QPixmap('../images/mouth_types.jpg')
-        self.label.setPixmap(pixmap)
+        self.mouth1_image.setPixmap(pixmap)
 
         # Add dropdown list of algorithms
         comboBox = QComboBox(self)
@@ -87,17 +90,31 @@ class FormWidget(QWidget):
         self.rightLayout.addWidget(self.sld_duration)
         self.rightLayout.addWidget(slider_label_pitch)
         self.rightLayout.addWidget(self.sld_pitch)
-        self.rightLayout.addWidget(self.label)
+        self.rightLayout.addWidget(self.mouth1_image)
         self.rightLayout.addWidget(comboBox)
         self.rightLayout.addWidget(run_algorithm_button)
 
         self.layout.addLayout(self.rightLayout)
 
+    def right_right_layout_init(self):
+        self.radio_mul_speakers = QRadioButton("Show multiple speakers")
+        self.radio_mul_speakers.setChecked(True)
+
+        # Add Image of the mouth
+        self.mouth2_image = QLabel(self)
+        pixmap = QPixmap('../images/mouth_types.jpg')
+        self.mouth2_image.setPixmap(pixmap)
+
+        self.rightRightLayout.addWidget(self.radio_mul_speakers)
+        self.rightRightLayout.addWidget(self.mouth2_image)
+
+        self.layout.addLayout(self.rightRightLayout)
+
     def update_label(self, phoneme_name):
         # import pdb; pdb.set_trace()
         pixmap = self.dict[phoneme_name]
-        self.label.setPixmap(pixmap)
-        self.label.update()
+        self.mouth1_image.setPixmap(pixmap)
+        self.mouth1_image.update()
 
     def left_layout_init(self):
         self.plot_widget = QWidget(self)

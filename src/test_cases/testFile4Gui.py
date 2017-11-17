@@ -1,46 +1,48 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
-"""
-ZetCode PyQt5 tutorial
-
-In this example, we connect a signal
-of a QSlider to a slot of a QLCDNumber.
-
-Author: Jan Bodnar
-Website: zetcode.com
-Last edited: January 2017
-"""
-
+# pythonprogramminglanguage.com
 import sys
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QLCDNumber, QSlider,
-                             QVBoxLayout, QApplication)
+from PyQt5.QtWidgets import (QApplication, QCheckBox, QGridLayout, QGroupBox,
+                             QMenu, QPushButton, QRadioButton, QVBoxLayout, QWidget, QSlider)
 
 
-class Example(QWidget):
-    def __init__(self):
-        super().__init__()
+class Window(QWidget):
+    def __init__(self, parent=None):
+        super(Window, self).__init__(parent)
 
-        self.initUI()
+        grid = QGridLayout()
+        grid.addWidget(self.createExampleGroup(), 0, 0)
+        grid.addWidget(self.createExampleGroup(), 1, 0)
+        grid.addWidget(self.createExampleGroup(), 0, 1)
+        grid.addWidget(self.createExampleGroup(), 1, 1)
+        self.setLayout(grid)
 
-    def initUI(self):
-        lcd = QLCDNumber(self)
-        sld = QSlider(Qt.Horizontal, self)
+        self.setWindowTitle("PyQt5 Sliders")
+        self.resize(400, 300)
+
+    def createExampleGroup(self):
+        groupBox = QGroupBox("Slider Example")
+
+        radio1 = QRadioButton("&Radio horizontal slider")
+
+        slider = QSlider(Qt.Horizontal)
+        slider.setFocusPolicy(Qt.StrongFocus)
+        slider.setTickPosition(QSlider.TicksBothSides)
+        slider.setTickInterval(10)
+        slider.setSingleStep(1)
+
+        radio1.setChecked(True)
 
         vbox = QVBoxLayout()
-        vbox.addWidget(lcd)
-        vbox.addWidget(sld)
+        vbox.addWidget(radio1)
+        vbox.addWidget(slider)
+        vbox.addStretch(1)
+        groupBox.setLayout(vbox)
 
-        self.setLayout(vbox)
-        sld.valueChanged.connect(lcd.display)
-
-        self.setGeometry(300, 300, 250, 150)
-        self.setWindowTitle('Signal and slot')
-        self.show()
+        return groupBox
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Example()
+    clock = Window()
+    clock.show()
     sys.exit(app.exec_())
