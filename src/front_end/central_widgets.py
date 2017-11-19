@@ -54,6 +54,9 @@ class FormWidget(QWidget):
         pitch_change()
 
     def right_layout_init(self):
+        self.radio_mul_speakers = QRadioButton("Show multiple speakers")
+        self.radio_mul_speakers.setChecked(True)
+        self.radio_mul_speakers.toggled.connect(self.on_radio_button_toggled)
         # Add Duration Slider
         slider_label_duration = QLabel("Duration")
         slider_label_duration.setAlignment(Qt.AlignCenter)
@@ -86,6 +89,7 @@ class FormWidget(QWidget):
         run_algorithm_button.setToolTip('Run the selected phoneme recognition algorithm')
         run_algorithm_button.clicked.connect(self.run_phonema_recognition_algorithm)
 
+        self.rightLayout.addWidget(self.radio_mul_speakers)
         self.rightLayout.addWidget(slider_label_duration)
         self.rightLayout.addWidget(self.sld_duration)
         self.rightLayout.addWidget(slider_label_pitch)
@@ -97,24 +101,33 @@ class FormWidget(QWidget):
         self.layout.addLayout(self.rightLayout)
 
     def right_right_layout_init(self):
-        self.radio_mul_speakers = QRadioButton("Show multiple speakers")
-        self.radio_mul_speakers.setChecked(True)
-
         # Add Image of the mouth
         self.mouth2_image = QLabel(self)
         pixmap = QPixmap('../images/mouth_types.jpg')
         self.mouth2_image.setPixmap(pixmap)
 
-        self.rightRightLayout.addWidget(self.radio_mul_speakers)
         self.rightRightLayout.addWidget(self.mouth2_image)
 
         self.layout.addLayout(self.rightRightLayout)
 
-    def update_label(self, phoneme_name):
+    def radiobutton_is_checked(self):
+        return self.radio_mul_speakers.isChecked()
+
+    def on_radio_button_toggled(self):
+        radio_mul_speakers = self.sender()
+        self.mouth2_image.setHidden(not radio_mul_speakers.isChecked())
+
+    def update_mouth1(self, phoneme_name):
         # import pdb; pdb.set_trace()
         pixmap = self.dict[phoneme_name]
         self.mouth1_image.setPixmap(pixmap)
         self.mouth1_image.update()
+
+    def update_mouth2(self, phoneme_name):
+        # import pdb; pdb.set_trace()
+        pixmap = self.dict[phoneme_name]
+        self.mouth2_image.setPixmap(pixmap)
+        self.mouth2_image.update()
 
     def left_layout_init(self):
         self.plot_widget = QWidget(self)

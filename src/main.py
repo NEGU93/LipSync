@@ -27,7 +27,7 @@ class App(QMainWindow):
         self.title = 'LipSync - by Matias Dwek & Agustin Barrachina'
         self.left = 100
         self.top = 100
-        self.width = 640
+        self.width = 1200
         self.height = 400
         self.data = data.LipSyncData.get_instance()
         self.form_widget = central_widgets.FormWidget(self)
@@ -120,7 +120,10 @@ class App(QMainWindow):
         self.form_widget.draw_vertical_line(self.data.get_current_time(), remove=False, color='g')
         while count < len(self.data.dat) and self.data.get_current_time() != 0.0:
             if self.data.dat[count][0] <= self.data.get_current_index():
-                self.form_widget.update_label(self.data.dat[count][1].name)
+                if self.form_widget.radiobutton_is_checked() and True:    # TODO: The 'true' must check condition to see which mouth updates
+                    self.form_widget.update_mouth2(self.data.dat[count][1].name)
+                else:
+                    self.form_widget.update_mouth1(self.data.dat[count][1].name)
                 print(str(self.data.dat[count][0]) + ' ' + self.data.dat[count][1].name)
                 count = count + 1
             self.form_widget.draw_vertical_line(self.data.get_current_time(), color='g')
