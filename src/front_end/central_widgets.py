@@ -1,6 +1,7 @@
 import data
 import vocal_lpc_phonemes
 from pitch_change import pitch_change
+from duration_change import duration_change
 import numpy as np
 
 from PyQt5.QtWidgets import QPushButton, QHBoxLayout, QWidget, QVBoxLayout, QLabel, QSizePolicy, QSlider, QComboBox, \
@@ -46,12 +47,10 @@ class FormWidget(QWidget):
     def change_duration(self):
         # TODO: mati, aca pones tu funcion de cambiar duracion
         print(self.sld_duration.value())
-        print('Function not implemented yet')
+        duration_change(self.sld_duration.value())
 
     def change_pitch(self):
-        # TODO: pasar el valor del pitch
-        print(self.sld_pitch.value())
-        pitch_change()
+        pitch_change(self.sld_pitch.value())
 
     def right_layout_init(self):
         self.radio_mul_speakers = QRadioButton("Show multiple speakers")
@@ -61,9 +60,9 @@ class FormWidget(QWidget):
         slider_label_duration = QLabel("Duration")
         slider_label_duration.setAlignment(Qt.AlignCenter)
         self.sld_duration = QSlider(Qt.Horizontal, self)
-        self.sld_duration.setMinimum(50)
-        self.sld_duration.setMaximum(200)
-        self.sld_duration.setValue(100)
+        self.sld_duration.setMinimum(-300)
+        self.sld_duration.setMaximum(300)
+        self.sld_duration.setValue(0)
         # sld_duration.setTickPosition(QSlider.TicksBelow) # If I want a grid below
         # sld_duration.setTickInterval(1) # Set an interval
         self.sld_duration.sliderReleased.connect(self.change_duration)
@@ -72,6 +71,9 @@ class FormWidget(QWidget):
         slider_label_pitch = QLabel("Pitch")
         slider_label_pitch.setAlignment(Qt.AlignCenter)
         self.sld_pitch = QSlider(Qt.Horizontal, self)
+        self.sld_pitch.setMinimum(-300)
+        self.sld_pitch.setMaximum(300)
+        self.sld_pitch.setValue(0)
         self.sld_pitch.sliderReleased.connect(self.change_pitch)
 
         # Add Image of the mouth

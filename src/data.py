@@ -83,7 +83,10 @@ class LipSyncData:
 
     def play_audio(self):
         self.playing = True
-        sd.play(self.audio, self.fs)
+        if ~hasattr(data, 'audio'):
+            sd.play(self.audio, self.fs)
+        else:
+            sd.play(data.audio, self.fs)
         self.start_time = sd.get_stream().time
 
     def stop_audio(self):

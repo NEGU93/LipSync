@@ -1,0 +1,2 @@
+- Poner en forma la funcion de change pitch
+- Arreglar lo de stereo/mono
