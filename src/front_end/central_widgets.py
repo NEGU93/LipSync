@@ -13,6 +13,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
+from speaker_recognition import speaker_recognition
+
 
 class FormWidget(QWidget):
     def __init__(self, parent):
@@ -45,9 +47,8 @@ class FormWidget(QWidget):
         self.dict[data.Phonemes.rest.name] = QPixmap('../images/mouth_types/blair_rest.jpg')
 
     def change_duration(self):
-        # TODO: mati, aca pones tu funcion de cambiar duracion
-        print(self.sld_duration.value())
-        duration_change(self.sld_duration.value())
+        speaker_recognition()
+        # duration_change(self.sld_duration.value())
 
     def change_pitch(self):
         pitch_change(self.sld_pitch.value())

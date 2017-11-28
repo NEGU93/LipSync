@@ -1,1 +1,4 @@
 https://stackoverflow.com/questions/43963982/python-change-pitch-of-wav-file
+GENDER RECOGNITION USING SPEECH PROCESSING
+TECHNIQUES IN LABVIEW: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.301.9166&rep=rep1&type=pdf
+Gender Distinction Using Short Segments of Speech Signal: http://paper.ijcsns.org/07_book/200810/20081024.pdf

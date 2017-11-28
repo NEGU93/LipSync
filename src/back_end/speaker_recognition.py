@@ -48,4 +48,7 @@ def create_model(signal_file):
 
 
 def speaker_recognition():
-    print('')
+    men_model = create_model('../sounds/men.wav')
+    women_model = create_model('../sounds/women.wav')
+    print(signal_is_speaker('../sounds/test_women.wav', women_model, men_model))
+    print(signal_is_speaker('../sounds/test_men.wav', women_model, men_model))
