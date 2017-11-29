@@ -18,8 +18,11 @@ def phn_reduce(label):
     nout = np.zeros(len(Phonemes))
     item_index = np.where(label == 1.)[0][0]        # get the index of the place where I have a 1.
     phn = timit_phonemes[item_index]
+    # case rest
+    if ('epi' == phn) or ('h#' == phn):
+        nout[9] = 1
     # Case AI
-    if ('a' in phn) or ('i' in phn):
+    elif ('a' in phn) or ('i' in phn):
         nout[0] = 1
     # Case E
     elif 'e' in phn:
@@ -42,16 +45,13 @@ def phn_reduce(label):
     # Case WQ
     elif ('w' in phn) or ('q' in phn):
         nout[8] = 1
-    # case rest
-    elif ('epi' == phn) or ('h#' == phn):
-        nout[9] = 1
     # Case etc
     else:
         nout[4] = 1
     return nout
 
 
-def reshape_data(features,timesteps):
+def reshape_data(features, timesteps):
     [N, M] = np.shape(features)
     out = np.zeros([N-timesteps,timesteps,M])
     for i in range(N-timesteps):
@@ -65,6 +65,7 @@ def reduce_phn_data(labels):
     for i, l in enumerate(labels):
         out[i] = phn_reduce(l)
     return out
+
 
 if __name__ == '__main__':
     # Prepare data

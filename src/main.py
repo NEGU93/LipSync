@@ -136,6 +136,7 @@ class App(QMainWindow):
     def pause_audio(self):
         self.form_widget.add_vertical_line(self.data.get_current_time())
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()

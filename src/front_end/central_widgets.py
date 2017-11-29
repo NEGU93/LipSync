@@ -1,5 +1,6 @@
 import data
 import vocal_lpc_phonemes
+import rnn_phonems as rp
 from pitch_change import pitch_change
 from duration_change import duration_change
 import numpy as np
@@ -149,7 +150,8 @@ class FormWidget(QWidget):
 
     def run_phonema_recognition_algorithm(self):
         # self.data.example_dat()
-        vocal_lpc_phonemes.vocal_phonemes()
+        # vocal_lpc_phonemes.vocal_phonemes()
+        rp.rnn_phonemes()
         for i in range(1, len(self.data.dat)):
             self.add_vertical_line(self.data.dat[i][0] / self.data.fs, remove=False)
 
