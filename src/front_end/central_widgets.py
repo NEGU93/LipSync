@@ -47,15 +47,14 @@ class FormWidget(QWidget):
         self.dict[data.Phonemes.rest.name] = QPixmap('../images/mouth_types/blair_rest.jpg')
 
     def change_duration(self):
-        speaker_recognition()
-        # duration_change(self.sld_duration.value())
+        duration_change(self.sld_duration.value())
 
     def change_pitch(self):
         pitch_change(self.sld_pitch.value())
 
     def right_layout_init(self):
         self.radio_mul_speakers = QRadioButton("Show multiple speakers")
-        self.radio_mul_speakers.setChecked(True)
+        self.radio_mul_speakers.setChecked(False)
         self.radio_mul_speakers.toggled.connect(self.on_radio_button_toggled)
         # Add Duration Slider
         slider_label_duration = QLabel("Duration")
@@ -117,6 +116,9 @@ class FormWidget(QWidget):
         return self.radio_mul_speakers.isChecked()
 
     def on_radio_button_toggled(self):
+        if self.radio_mul_speakers.isChecked():
+            if self.data.world_model == [] or self.data.client1_model == [] or self.data.client2_model == []:
+                print("Please load models before enabling speaker recognition.")
         radio_mul_speakers = self.sender()
         self.mouth2_image.setHidden(not radio_mul_speakers.isChecked())
 
@@ -148,10 +150,13 @@ class FormWidget(QWidget):
         self.canvas.plot(filename)
 
     def run_phonema_recognition_algorithm(self):
-        # self.data.example_dat()
-        vocal_lpc_phonemes.vocal_phonemes()
-        for i in range(1, len(self.data.dat)):
-            self.add_vertical_line(self.data.dat[i][0] / self.data.fs, remove=False)
+        print('')  # self.data.example_dat()
+        # vocal_lpc_phonemes.vocal_phonemes()
+        # for i in range(1, len(self.data.dat)):
+        #     self.add_vertical_line(self.data.dat[i][0] / self.data.fs, remove=False)
+        if self.radio_mul_speakers.isChecked():
+            speaker_recognition(self.data.client1_model, self.data.client2_model, self.data.world_model)
+            # speaker_recognition()
 
     def draw_vertical_line(self, sec, remove=True, color='r'):
         self.canvas.draw_line(sec, remove, color)

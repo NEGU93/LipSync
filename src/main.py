@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QAction, QFi
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import QtWidgets
+import pickle
 
 
 def catch_exceptions(t, val, tb):
@@ -67,6 +68,24 @@ class App(QMainWindow):
         export_button.setStatusTip("Export as dat file")
         export_button.triggered.connect(self.file_export)
         file_menu.addAction(export_button)
+
+        # Import models
+        open_world_model = QAction('Load World Model', self)
+        open_world_model.setShortcut("Ctrl+B")
+        open_world_model.setStatusTip("Open pickle file`for world model")
+        open_world_model.triggered.connect(self.file_world_model)
+        file_menu.addAction(open_world_model)
+        open_client1_model = QAction('Load Client 1 Model', self)
+        open_client1_model.setShortcut("Ctrl+M")
+        open_client1_model.setStatusTip("Open pickle file for client 1 model")
+        open_client1_model.triggered.connect(self.file_client1_model)
+        file_menu.addAction(open_client1_model)
+        open_client2_model = QAction('Load Client 2 Model', self)
+        open_client2_model.setShortcut("Ctrl+N")
+        open_client2_model.setStatusTip("Open pickle file for client 2 model")
+        open_client2_model.triggered.connect(self.file_client2_model)
+        file_menu.addAction(open_client2_model)
+
         # Exit Button
         exit_button = QAction(QIcon('exit24.png'), 'Exit', self)
         exit_button.setShortcut('Ctrl+Q')
@@ -103,11 +122,34 @@ class App(QMainWindow):
         path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav', directory='../sounds/')
         if path is not '':
             self.data.open_wav(path)
-            filename = path.split('/')
-            self.form_widget.plot_data(filename[len(filename) - 1])
+            self.filename = path
+            self.data.filename = path
+            self.form_widget.plot_data(self.filename[len(self.filename) - 1])
             self.play_button.setEnabled(True)
             self.stop_button.setEnabled(True)
             self.pause_button.setEnabled(True)
+
+    def file_world_model(self):
+        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.pckl', directory='../sounds/')
+        if path is not '':
+            f = open(path, 'rb')
+            self.data.world_model = pickle.load(f)
+            f.close()
+
+    def file_client1_model(self):
+        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.pckl', directory='../sounds/')
+        if path is not '':
+            # self.data.client1_model = path
+            f = open(path, 'rb')
+            self.data.client1_model = pickle.load(f)
+            f.close()
+
+    def file_client2_model(self):
+        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.pckl', directory='../sounds/')
+        if path is not '':
+            f = open(path, 'rb')
+            self.data.client2_model = pickle.load(f)
+            f.close()
 
     def file_export(self):
         path, _ = QFileDialog.getSaveFileName(self, 'Export File', filter='*.dat', directory='../out/')
@@ -136,7 +178,10 @@ class App(QMainWindow):
     def pause_audio(self):
         self.form_widget.add_vertical_line(self.data.get_current_time())
 
+
 if __name__ == '__main__':
+    # build_model() # from speaker_recognition import build_model
+
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec_())

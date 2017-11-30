@@ -69,37 +69,3 @@ def vocal_phonemes():
             # if prev != sound_frames_formants[it]:
                 prev = sound_frames_average[it]
                 datos.append_dat(it, sound_frames_average[it])
-
-
-    # print(st_energy.size)
-    # print(sound_frames.size)
-
-    # sd.play(sound_frames, fs)
-    # Lineas a descomentar:
-    # plt.plot(sound_frames)
-    # plt.plot(sound_frames_formants)
-
-    # sound_frames_a = [i for i in formants if i == '/a/']
-    # for i in range(0, len(sound_frames)):
-    #     sound_frames_a[min(i*step_size, len(sound_frames))] =
-    # sound_frames_a = np.array([0] * len(sound_frames))
-    # for it in range(0, len(sound_frames)):
-    #     if sound_frames_formants[it] == '/a/':
-    #         sound_frames_a[it] = sound_frames[it]
-    # plt.plot(sound_frames_a)
-    # sound_frames_a = [i for i in sound_frames_formants if i == '/a/']
-    # plt.plot(sound_frames_a)
-    # plt.plot(st_energy)
-    # print(st_energy)
-
-    #             Sirve
-    # plt.show()
-
-    # print(np.zeros((2, 5)))
-    #
-    # x = np.linspace(-np.pi, np.pi, 200)
-    # sig = np.sin(x)
-    # window = signal.hann(100)
-    # ww = np.linspace(-np.pi, np.pi, 10)
-    # print(ww[ww.size-1])
-    # print(shorttime_energy(sig, window, 50))

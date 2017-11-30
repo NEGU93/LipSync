@@ -33,6 +33,8 @@ class LipSyncData:
             raise Exception("This Class is a singleton!")
         else:
             LipSyncData.__instance = self
+        self.filename = []
+
         self.audio = []
         self.audio_right = []
         self.audio_left = []
@@ -44,6 +46,11 @@ class LipSyncData:
         self.audio_time = 0.0
         self.dat = [(0, Phonemes.rest)]
         self.playing = False
+
+        self.world_model = []
+        self.client1_model = []
+        self.client2_model = []
+        self.speaker_recognized = []
 
     def open_wav(self, path):
         sound_frames, fs = self.wav_to_floats(path)
@@ -70,7 +77,7 @@ class LipSyncData:
         else:  # stereo
             self.audio_right = np.asarray(a[0::2])
             self.audio_left = np.asarray(a[1::2])
-            return a, self.fs
+            return (self.audio_right + self.audio_left) / 2, self.fs
 
     def wav_to_ints(self, path):
         w = wave.open(path, 'r')
@@ -83,7 +90,7 @@ class LipSyncData:
 
     def play_audio(self):
         self.playing = True
-        if ~hasattr(data, 'audio'):
+        if not hasattr(data, 'audio'):
             sd.play(self.audio, self.fs)
         else:
             sd.play(data.audio, self.fs)
