@@ -25,6 +25,7 @@ class FormWidget(QWidget):
         self.rightLayout = QVBoxLayout(self)
         self.mouthLayout = QHBoxLayout(self)
         self.data = data.LipSyncData.get_instance()
+        self.algorithm_index = 0
 
         self.left_layout_init()
         self.right_layout_init()
@@ -79,9 +80,10 @@ class FormWidget(QWidget):
         self.mouth_layout_init()
 
         # Add dropdown list of algorithms
-        comboBox = QComboBox(self)
-        comboBox.addItem('Algorithm 1')
-        comboBox.addItem('Algorithm 2')
+        self.comboBox = QComboBox(self)
+        self.comboBox.addItem('RNN - LSTM')
+        self.comboBox.addItem('Vocal Recognition')
+        self.comboBox.currentIndexChanged.connect(self.selectionchange)
 
         # Button to run algorithm
         run_algorithm_button = QPushButton('Run Algorithm', self)
@@ -94,10 +96,17 @@ class FormWidget(QWidget):
         self.rightLayout.addWidget(slider_label_pitch)
         self.rightLayout.addWidget(self.sld_pitch)
         self.rightLayout.addLayout(self.mouthLayout)
-        self.rightLayout.addWidget(comboBox)
+        self.rightLayout.addWidget(self.comboBox)
         self.rightLayout.addWidget(run_algorithm_button)
 
         self.layout.addLayout(self.rightLayout)
+
+    def selectionchange(self, i):
+        self.algorithm_index = i
+        # print("Items in the list are :")
+        # for count in range(self.comboBox.count()):
+        #     print(self.comboBox.itemText(count))
+        # print("Current index", i, "selection changed ", self.comboBox.currentText())
 
     def mouth_layout_init(self):
         # Add Image of the mouth
@@ -152,9 +161,12 @@ class FormWidget(QWidget):
     def run_phonema_recognition_algorithm(self):
         if self.radio_mul_speakers.isChecked():
             speaker_recognition(self.data.client1_model, self.data.client2_model, self.data.world_model)
-        # self.data.example_dat()
-        # vocal_lpc_phonemes.vocal_phonemes()
-        rp.rnn_phonemes()
+        if self.algorithm_index == 0:
+            rp.rnn_phonemes()
+        elif self.algorithm_index == 1:
+            vocal_lpc_phonemes.vocal_phonemes()
+        else:
+            print('Error: Dropdownlist out of range')
         # import pdb; pdb.set_trace()
         for i in range(1, len(self.data.dat)):
             self.add_vertical_line(self.data.dat[i][0] / self.data.fs, remove=False)
