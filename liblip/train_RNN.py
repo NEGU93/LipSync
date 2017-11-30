@@ -10,7 +10,7 @@ from keras.layers import Dense, LSTM
 from keras.optimizers import SGD, Adam
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 
-checkpoint = ModelCheckpoint(filepath='../data/saved_rnn/model_{epoch:02d}_{val_loss:.2f}.hdf5')
+checkpoint = ModelCheckpoint(filepath='../data/saved_rnn/model_{epoch:02d}_{val_loss:.4f}.hdf5')
 reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.001)
 
 
@@ -116,9 +116,9 @@ if __name__ == '__main__':
 
     # Train
     print('Training Net')
-    model.fit(features_train, label_train, batch_size=100, epochs=20, callbacks=[checkpoint, reduce_lr],
+    model.fit(features_train, label_train, batch_size=100, epochs=1, callbacks=[checkpoint, reduce_lr],
               validation_data=(features_test, label_test))
 
-    model.save('../data/saved_rnn/model_adam.hdf5')
+    model.save('../data/saved_rnn/model_fix.hdf5')
 
     import pdb; pdb.set_trace()

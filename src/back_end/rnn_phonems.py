@@ -1,4 +1,3 @@
-import parser_timit as pt
 import scipy.io.wavfile as wav
 import data
 from train_RNN import reshape_data
@@ -14,10 +13,11 @@ def rnn_phonemes():
     nfft = 512  # FFT size
 
     data_rnn = data.LipSyncData.get_instance()
-    # x = data_rnn.audio
-    # fs = data_rnn.fs
+    x = data_rnn.rnn_audio
+    fs = data_rnn.fs
 
-    (fs, x) = wav.read('../../data/TIMIT/TRAIN/DR1/FCJF0/SA1RIFF.WAV')
+    # (fs, x) = wav.read('../data/SA1RIFF.WAV')
+    # import pdb; pdb.set_trace()
 
     mfcc_feat = mfcc(x, fs, winlen=window_size, winstep=step_size, numcep=numcep, nfft=nfft, appendEnergy=True)
     mfcc_delta = base.delta(mfcc_feat, 2)
@@ -29,7 +29,7 @@ def rnn_phonemes():
 
     data_reshaped = reshape_data(all_data, timesteps)
 
-    model = load_model('../../data/saved_rnn/model.hdf5')
+    model = load_model('../data/saved_rnn/model_fix.hdf5')
 
     classes = model.predict(data_reshaped, batch_size=100)
 
@@ -42,17 +42,18 @@ def rnn_phonemes():
         elif data.Phonemes(win_class.argmax()+1) is not result_phonemes[len(result_phonemes)-1][1]:
             result_phonemes.append((int(i*step_size*fs), data.Phonemes(win_class.argmax()+1)))
 
-    # i = 1
-    # while i < len(result_phonemes)-1:
-    #     if (result_phonemes[i+1][0] - result_phonemes[i-1][0]) < 8*step_size*fs:
-    #         if result_phonemes[i+1][1] == result_phonemes[i-1][1]:
-    #             del result_phonemes[i]
-    #         del result_phonemes[i]
-    #     else:
-    #         i = i + 1
+    i = 1
+    while i < len(result_phonemes)-1:
+        if (result_phonemes[i+1][0] - result_phonemes[i-1][0]) < 10*step_size*fs:
+            del result_phonemes[i]
+            while result_phonemes[i][1] == result_phonemes[i-1][1]:
+                del result_phonemes[i]
+        else:
+            i = i + 1
 
-    print(result_phonemes)
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
+
+    data_rnn.dat = result_phonemes
 
 
 if __name__ == '__main__':
