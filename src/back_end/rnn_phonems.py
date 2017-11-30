@@ -6,6 +6,18 @@ from python_speech_features import mfcc, base
 from keras.models import load_model
 
 
+def low_pass_data(result_phonemes, fs, coef=4, step_size=0.01):
+    i = 1
+    while i < len(result_phonemes) - 1:
+        if (result_phonemes[i + 1][0] - result_phonemes[i][0]) < coef * step_size * fs:
+            del result_phonemes[i]
+            while (i != len(result_phonemes) - 1) and result_phonemes[i][1] == result_phonemes[i - 1][1]:
+                del result_phonemes[i]
+        else:
+            i = i + 1
+    return result_phonemes
+
+
 def rnn_phonemes():
     window_size = 0.02  # length of window in seconds
     step_size = 0.01  # step of succesive windows in seconds
@@ -29,7 +41,7 @@ def rnn_phonemes():
 
     data_reshaped = reshape_data(all_data, timesteps)
 
-    model = load_model('../data/saved_rnn/model_fix.hdf5')
+    model = load_model('../data/saved_rnn/model_12_0.85.hdf5')
 
     classes = model.predict(data_reshaped, batch_size=100)
 
@@ -42,14 +54,8 @@ def rnn_phonemes():
         elif data.Phonemes(win_class.argmax()+1) is not result_phonemes[len(result_phonemes)-1][1]:
             result_phonemes.append((int(i*step_size*fs), data.Phonemes(win_class.argmax()+1)))
 
-    i = 1
-    while i < len(result_phonemes)-1:
-        if (result_phonemes[i+1][0] - result_phonemes[i-1][0]) < 10*step_size*fs:
-            del result_phonemes[i]
-            while result_phonemes[i][1] == result_phonemes[i-1][1]:
-                del result_phonemes[i]
-        else:
-            i = i + 1
+    for i in range(1, 7):
+        result_phonemes = low_pass_data(result_phonemes, fs, i)
 
     # import pdb; pdb.set_trace()
 
