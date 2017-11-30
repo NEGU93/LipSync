@@ -119,7 +119,7 @@ class App(QMainWindow):
         self.toolbar.addAction(self.stop_button)
 
     def file_open(self):
-        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav', directory='../sounds/')
+        path, _ = QFileDialog.getOpenFileName(self, 'Open File', filter='*.wav', directory='../\data\TIMIT\TEST')
         if path is not '':
             self.data.open_wav(path)
             self.filename = path

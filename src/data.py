@@ -4,6 +4,7 @@ import struct
 import numpy as np
 import sounddevice as sd
 from enum import Enum
+import scipy.io.wavfile as wav
 
 
 class Phonemes(Enum):
@@ -36,6 +37,7 @@ class LipSyncData:
         self.filename = []
 
         self.audio = []
+        self.rnn_audio = np.zeros(1)
         self.audio_right = []
         self.audio_left = []
         self.audio_int = []
@@ -54,6 +56,7 @@ class LipSyncData:
 
     def open_wav(self, path):
         sound_frames, fs = self.wav_to_floats(path)
+        (_, self.rnn_audio) = wav.read(path)
         self.wav_to_ints(path)
         self.audio = np.asarray(sound_frames)
         self.audio_time = len(self.audio) / fs
