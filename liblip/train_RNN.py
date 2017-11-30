@@ -116,9 +116,9 @@ if __name__ == '__main__':
 
     # Train
     print('Training Net')
-    model.fit(features_train, label_train, batch_size=100, epochs=1, callbacks=[checkpoint, reduce_lr],
+    model.fit(features_train, label_train, batch_size=100, epochs=40, callbacks=[checkpoint, reduce_lr],
               validation_data=(features_test, label_test))
 
-    model.save('../data/saved_rnn/model_fix.hdf5')
+    model.save('../data/saved_rnn/model.hdf5')
 
     import pdb; pdb.set_trace()

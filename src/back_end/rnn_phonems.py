@@ -41,7 +41,7 @@ def rnn_phonemes():
 
     data_reshaped = reshape_data(all_data, timesteps)
 
-    model = load_model('../data/saved_rnn/model_12_0.85.hdf5')
+    model = load_model('../data/saved_rnn/model_17_0.8750.hdf5')
 
     classes = model.predict(data_reshaped, batch_size=100)
 
