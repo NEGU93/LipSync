@@ -14,9 +14,11 @@ import pickle
 
 
 def mfcc_wav(file):
-    (rate, sig) = wav.read(file)
-    mfcc_feat = mfcc(sig, rate, nfft=512, appendEnergy=True)
+    (rate, signal) = wav.read(file)
+    # signal = (signal[:, 0] + signal[:, 1]) / 2
+    mfcc_feat = mfcc(signal, rate, nfft=512, appendEnergy=True)
     return mfcc_feat
+
 
 def mfcc_signal(signal, fs):
     mfcc_feat = mfcc(signal, fs, nfft=512, appendEnergy=True)
@@ -76,15 +78,6 @@ def speaker_recognition_frame(signal, client1_model, client2_model, world_model,
         if frame_signal.size == 0:
             return result
 
-        # client1 = signal_is_speaker(frame_signal, fs, client1_model, world_model)
-        # client2 = signal_is_speaker(frame_signal, fs, client2_model, world_model)
-
-        # if (client1 == True) and (client2 == False):
-        #     frame_result = 1
-        # elif (client1 == False) and (client2 == True):
-        #     frame_result = 2
-        # else:
-        #     frame_result = 0
         mfcc_feat = mfcc_signal(frame_signal, fs)
         score_client1 = client1_model.score(mfcc_feat)
         score_client2 = client2_model.score(mfcc_feat)
@@ -113,13 +106,16 @@ def speaker_recognition(client1_model, client2_model, world_model):
 
     datos = data.LipSyncData.get_instance()
     fs, signal = wav.read(datos.filename)
+    # signal = (signal[:, 0] + signal[:, 1]) / 2
 
     step_size = round(700e-3 * fs)
     # step_size = signal.size
 
     data.speaker_recognized = speaker_recognition_frame(signal, client1_model, client2_model, world_model, step_size, fs)
 
-    plt.plot(data.speaker_recognized)
+    plt.plot(np.linspace(0.0, 1.0, num=datos.audio.size), datos.audio)
+    plt.plot(np.linspace(0.0, 1.0, num=data.speaker_recognized.size), data.speaker_recognized)
+    plt.show()
     plt.show()
 
 
