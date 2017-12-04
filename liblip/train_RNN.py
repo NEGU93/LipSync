@@ -116,9 +116,13 @@ if __name__ == '__main__':
 
     # Train
     print('Training Net')
-    model.fit(features_train, label_train, batch_size=100, epochs=40, callbacks=[checkpoint, reduce_lr],
-              validation_data=(features_test, label_test))
+    history = model.fit(features_train, label_train, batch_size=100, epochs=15, callbacks=[checkpoint, reduce_lr],
+                        validation_data=(features_test, label_test), verbose=2)
 
-    model.save('../data/saved_rnn/model.hdf5')
+    np.save('../data/log/loss.npy', history.history['loss'])
+    np.save('../data/log/val_loss.npy', history.history['val_loss'])
+    np.save('../data/log/acc.npy', history.history['acc'])
+    np.save('../data/log/val_acc.npy', history.history['val_acc'])
+    model.save('../data/saved_rnn/model_last.hdf5')
 
     import pdb; pdb.set_trace()

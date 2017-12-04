@@ -117,6 +117,7 @@ class FormWidget(QWidget):
         self.mouth2_image = QLabel(self)
         pixmap = QPixmap('../images/mouth_types.jpg')
         self.mouth2_image.setPixmap(pixmap)
+        self.mouth2_image.setHidden(True)
 
         self.mouthLayout.addWidget(self.mouth1_image)
         self.mouthLayout.addWidget(self.mouth2_image)
