@@ -22,7 +22,7 @@ This programs loads an audio of one or two speakers and performs the following a
 
 - Mouth image shows the speaker mouth movement
 - Progress line in green (in sync with the playing audio)
-- 
+- Done with pyQT5
 
 
 ## References
